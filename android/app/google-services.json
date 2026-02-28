@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "504816582582",
+    "firebase_url": "https://bp-project-53add-default-rtdb.firebaseio.com",
+    "project_id": "bp-project-53add",
+    "storage_bucket": "bp-project-53add.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504816582582:android:480922988f2a402f424b17",
+        "android_client_info": {
+          "package_name": "com.example.bp_monitor_iot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4IUXArh8tQ5MRPvwT7o53Cny7bOUfsTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
