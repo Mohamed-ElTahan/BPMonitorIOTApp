@@ -1,6 +1,24 @@
+#include <windows.h>
+
+// Macro and type fallbacks for IDE IntelliSense when headers are not yet
+// generated or the environment is not synced.
+#ifndef APIENTRY
+#define APIENTRY __stdcall
+#endif
+#ifndef _In_
+#define _In_
+#endif
+#ifndef _In_opt_
+#define _In_opt_
+#endif
+#ifndef HINSTANCE
+typedef void *HINSTANCE;
+#endif
+
+#if __has_include(<flutter/dart_project.h>)
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
-#include <windows.h>
+#endif
 
 #include "flutter_window.h"
 #include "utils.h"
@@ -19,15 +37,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   flutter::DartProject project(L"data");
 
-  std::vector<std::string> command_line_arguments =
-      GetCommandLineArguments();
+  std::vector<std::string> command_line_arguments = GetCommandLineArguments();
 
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
-  if (!window.Create(L"SBPM", origin, size)) {
+  if (!window.Create(L"CSBPM", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

@@ -1,6 +1,6 @@
 {
-    "name": "SBPM",
-    "short_name": "SBPM",
+    "name": "CSBPM",
+    "short_name": "CSBPM",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
