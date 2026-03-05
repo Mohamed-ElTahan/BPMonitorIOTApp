@@ -10,6 +10,18 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => HistoryCubit()..loadHistory(),
+      child: const _HistoryScreen(),
+    );
+  }
+}
+
+class _HistoryScreen extends StatelessWidget {
+  const _HistoryScreen();
+
+  @override
+  Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () => context.read<HistoryCubit>().loadHistory(),
       color: AppColors.ecgGreen,
