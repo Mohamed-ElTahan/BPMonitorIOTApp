@@ -1,61 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../cubit/monitor_cubit.dart';
-import '../cubit/monitor_state.dart';
 import 'vitals_card.dart';
 
 class VitalsRowWidget extends StatelessWidget {
-  const VitalsRowWidget({super.key});
+  final List<double> livePressure;
+  final double sys;
+  final double dia;
+  final double hr;
+  final int spo2;
+
+  const VitalsRowWidget({
+    super.key,
+    required this.livePressure,
+    required this.sys,
+    required this.dia,
+    required this.hr,
+    required this.spo2,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MonitorCubit, MonitorState>(
-      builder: (context, state) {
-        int hr = 0;
-        int spo2 = 0;
-        int sys = 0;
-        int dia = 0;
-
-        if (state is MonitorConnected) {
-          hr = state.currentVitals.heartRate;
-          spo2 = state.currentVitals.spo2;
-          sys = state.currentVitals.systolicBP;
-          dia = state.currentVitals.diastolicBP;
-        }
-
-        return Row(
-          children: [
-            Expanded(
-              child: VitalsCard(
-                title: "Heart Rate",
-                value: "$hr BPM",
-                color: AppColors.heartRateRed,
-                icon: Icons.favorite,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: VitalsCard(
-                title: "SpO2",
-                value: "$spo2%",
-                color: AppColors.spo2Cyan,
-                icon: Icons.water_drop,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: VitalsCard(
-                title: "Blood Pressure",
-                value: "$sys/$dia",
-                subtitle: "mmHg",
-                color: AppColors.bpAmber,
-                icon: Icons.speed,
-              ),
-            ),
-          ],
-        );
-      },
+    final theme = Theme.of(context);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        SizedBox(
+          width: (MediaQuery.of(context).size.width - 44) / 2,
+          child: VitalsCard(
+            title: "Live Pressure",
+            value: livePressure.isNotEmpty
+                ? livePressure.last.toStringAsFixed(1)
+                : "--",
+            subtitle: "mmHg",
+            color: theme.colorScheme.secondary,
+            icon: Icons.compress,
+          ),
+        ),
+        SizedBox(
+          width: (MediaQuery.of(context).size.width - 44) / 2,
+          child: VitalsCard(
+            title: "Blood Pressure",
+            value: "${sys.toStringAsFixed(1)}/${dia.toStringAsFixed(1)}",
+            subtitle: "mmHg",
+            color: AppColors.bpAmber,
+            icon: Icons.speed,
+          ),
+        ),
+        SizedBox(
+          width: (MediaQuery.of(context).size.width - 44) / 2,
+          child: VitalsCard(
+            title: "Heart Rate",
+            value: "${hr.toInt()} BPM",
+            color: AppColors.heartRateRed,
+            icon: Icons.favorite,
+          ),
+        ),
+        SizedBox(
+          width: (MediaQuery.of(context).size.width - 44) / 2,
+          child: VitalsCard(
+            title: "SpO2",
+            value: "$spo2%",
+            color: AppColors.spo2Cyan,
+            icon: Icons.water_drop,
+          ),
+        ),
+      ],
     );
   }
 }
