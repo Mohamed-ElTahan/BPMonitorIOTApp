@@ -2,13 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/navigation_cubit.dart';
 import '../monitor/monitor_screen.dart';
-import '../monitor/widgets/connection_status.dart';
 import '../history/history_screen.dart';
 import '../analysis/analysis_screen.dart';
 import '../about/about_screen.dart';
 
 class MainScaffold extends StatelessWidget {
   const MainScaffold({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => NavigationCubit(),
+      child: const _MainScaffold(),
+    );
+  }
+}
+
+class _MainScaffold extends StatelessWidget {
+  const _MainScaffold();
 
   static final List<Widget> _screens = [
     const MonitorScreen(),
@@ -29,11 +40,13 @@ class MainScaffold extends StatelessWidget {
     return BlocBuilder<NavigationCubit, int>(
       builder: (context, currentIndex) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(_titles[currentIndex]),
-            actions: const [ConnectionStatus()],
-          ),
+          // appBar
+          appBar: AppBar(title: Text(_titles[currentIndex])),
+
+          // body
           body: _screens[currentIndex],
+
+          // bottomNavigationBar
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: currentIndex,
             onTap: (index) {
