@@ -1,58 +1,100 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/services/mqtt_service.dart';
-import '../../../core/services/firebase_service.dart';
+import '../repository/monitor_repository.dart';
 import '../models/vitals_model.dart';
 import 'monitor_state.dart';
 
 class MonitorCubit extends Cubit<MonitorState> {
-  final MqttService mqttService;
-  final FirebaseService firebaseService;
+  final MonitorRepository repository;
 
   // Rolling list of ECG points (max 150 points for graph)
   final List<double> _rollingEcgPoints = [];
   final int _maxDataPoints = 150;
 
-  // Batch for Firebase
-  final List<VitalsModel> _vitalsBatch = [];
-  final int _batchSize = 10; // Save every 10 vitals
+  bool _deviceOnline = false;
 
-  MonitorCubit({required this.mqttService, required this.firebaseService})
-    : super(MonitorInitial());
+  StreamSubscription? _connectionSub;
+  StreamSubscription? _deviceSub;
+  StreamSubscription? _vitalsSub;
+  StreamSubscription? _bpLiveSub;
+  StreamSubscription? _ecgSub;
+  StreamSubscription? _oximeterSub;
 
-  Future<void> connect() async {
+  MonitorCubit(this.repository) : super(MonitorInitial());
+
+  void initialize() {
     emit(MonitorConnecting());
 
-    mqttService.onConnectionStatusChanged = (status) {
-      if (status.contains('Disconnected') || status.contains('Failed')) {
-        emit(MonitorDisconnected(message: status));
-      } else if (state is MonitorConnected) {
-        emit((state as MonitorConnected).copyWith(connectionStatus: status));
-      } else {
+    // Attach listeners immediately
+    _connectionSub = repository.getConnectionStatus().listen((connected) {
+      if (!connected && state is MonitorConnected) {
+        emit(const MonitorDisconnected(message: "Connection Lost"));
+      } else if (connected && state is! MonitorConnected) {
         emit(
           MonitorConnected(
             currentVitals: VitalsModel.empty(),
             ecgHistory: const [],
-            connectionStatus: status,
+            connectionStatus: "Connected to HiveMQ",
           ),
         );
       }
-    };
+    });
 
-    mqttService.onDataReceived = (vitals) {
-      _updateState(vitals);
-      _handleFirebaseStorage(vitals);
-    };
+    _deviceSub = repository.getDeviceStatus().listen((isOnline) {
+      _deviceOnline = isOnline;
+      if (state is MonitorConnected) {
+        // We trigger an update to reflect the device status if needed
+        _updateState((state as MonitorConnected).currentVitals);
+      }
+    });
 
-    await mqttService.initializeAndConnect();
+    _vitalsSub = repository.getVitalsData().listen((vitals) {
+      if (state is MonitorConnected) {
+        final current = (state as MonitorConnected).currentVitals;
+        _updateState(
+          current.copyWith(
+            systolicBP: vitals.systolicBP,
+            diastolicBP: vitals.diastolicBP,
+            timestamp: vitals.timestamp,
+          ),
+        );
+      }
+    });
+
+    _bpLiveSub = repository.getBPLiveStream().listen((bpLive) {
+      if (state is MonitorConnected) {
+        final current = (state as MonitorConnected).currentVitals;
+        _updateState(current.copyWith(livePressure: [bpLive.toDouble()]));
+      }
+    });
+
+    _ecgSub = repository.getEcgStream().listen((ecgPoint) {
+      if (state is MonitorConnected) {
+        final current = (state as MonitorConnected).currentVitals;
+        _updateState(current.copyWith(ecg: [ecgPoint]));
+      }
+    });
+
+    _oximeterSub = repository.getOximeterStream().listen((oxi) {
+      if (state is MonitorConnected) {
+        final current = (state as MonitorConnected).currentVitals;
+        _updateState(
+          current.copyWith(
+            spo2: oxi['spo2'] as int? ?? current.spo2,
+            heartRate: oxi['hr'] as int? ?? current.heartRate,
+          ),
+        );
+      }
+    });
+
+    // Start connection in background
+    repository.mqtt.connect();
   }
 
   void _updateState(VitalsModel vitals) {
-    // Determine the current connection status from the existing state
+    if (state is! MonitorConnected) return;
+
     String currentStatus = 'Connected to HiveMQ';
-    if (state is MonitorConnected) {
-      currentStatus = (state as MonitorConnected).connectionStatus;
-    }
 
     // Add new ECG points to rolling history
     _rollingEcgPoints.addAll(vitals.ecg);
@@ -62,7 +104,6 @@ class MonitorCubit extends Cubit<MonitorState> {
       _rollingEcgPoints.removeAt(0);
     }
 
-    // Create a new list instance to ensure Bloc emits a state change
     final updatedHistory = List<double>.from(_rollingEcgPoints);
 
     emit(
@@ -71,40 +112,32 @@ class MonitorCubit extends Cubit<MonitorState> {
         ecgHistory: updatedHistory,
         connectionStatus: currentStatus,
         lastDataReceived: vitals.timestamp,
+        deviceOnline: _deviceOnline,
       ),
     );
   }
 
-  void _handleFirebaseStorage(VitalsModel vitals) {
-    _vitalsBatch.add(vitals);
-    if (_vitalsBatch.length >= _batchSize) {
-      firebaseService.saveVitalsBatch(List.from(_vitalsBatch));
-      _vitalsBatch.clear();
-    }
-  }
-
   void startMeasurement() {
-    mqttService.publishCommand('START');
+    repository.sendCommand('start');
   }
 
   void stopMeasurement() {
-    mqttService.publishCommand('STOP');
-    // Save remaining batch if any
-    if (_vitalsBatch.isNotEmpty) {
-      firebaseService.saveVitalsBatch(List.from(_vitalsBatch));
-      _vitalsBatch.clear();
-    }
+    repository.sendCommand('stop');
   }
 
   void disconnect() {
-    mqttService.disconnect();
-    stopMeasurement();
+    repository.mqtt.dispose();
     emit(const MonitorDisconnected(message: 'Disconnected by user'));
   }
 
   @override
   Future<void> close() {
-    mqttService.disconnect();
+    _connectionSub?.cancel();
+    _deviceSub?.cancel();
+    _vitalsSub?.cancel();
+    _bpLiveSub?.cancel();
+    _ecgSub?.cancel();
+    _oximeterSub?.cancel();
     return super.close();
   }
 }

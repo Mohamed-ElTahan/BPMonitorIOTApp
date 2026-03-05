@@ -17,13 +17,31 @@ class MonitorConnected extends MonitorState {
   final List<double> ecgHistory;
   final String connectionStatus;
   final DateTime? lastDataReceived;
+  final bool deviceOnline;
 
   const MonitorConnected({
     required this.currentVitals,
-    required this.ecgHistory,
-    required this.connectionStatus,
+    this.ecgHistory = const [],
+    this.connectionStatus = 'Connected',
     this.lastDataReceived,
+    this.deviceOnline = false,
   });
+
+  MonitorConnected copyWith({
+    VitalsModel? currentVitals,
+    List<double>? ecgHistory,
+    String? connectionStatus,
+    DateTime? lastDataReceived,
+    bool? deviceOnline,
+  }) {
+    return MonitorConnected(
+      currentVitals: currentVitals ?? this.currentVitals,
+      ecgHistory: ecgHistory ?? this.ecgHistory,
+      connectionStatus: connectionStatus ?? this.connectionStatus,
+      lastDataReceived: lastDataReceived ?? this.lastDataReceived,
+      deviceOnline: deviceOnline ?? this.deviceOnline,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -31,21 +49,8 @@ class MonitorConnected extends MonitorState {
     ecgHistory,
     connectionStatus,
     lastDataReceived,
+    deviceOnline,
   ];
-
-  MonitorConnected copyWith({
-    VitalsModel? currentVitals,
-    List<double>? ecgHistory,
-    String? connectionStatus,
-    DateTime? lastDataReceived,
-  }) {
-    return MonitorConnected(
-      currentVitals: currentVitals ?? this.currentVitals,
-      ecgHistory: ecgHistory ?? this.ecgHistory,
-      connectionStatus: connectionStatus ?? this.connectionStatus,
-      lastDataReceived: lastDataReceived ?? this.lastDataReceived,
-    );
-  }
 }
 
 class MonitorDisconnected extends MonitorState {
