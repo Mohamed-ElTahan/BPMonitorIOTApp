@@ -1,0 +1,50 @@
+﻿Analyzing bp_monitor_iot...                                     
+
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:61:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:78:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:102:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:111:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:128:5 - avoid_print
+warning - The value of the local variable 'bp' isn't used - lib\core\data_source\mqtt_data_source.dart:161:15 - unused_local_variable
+  error - Expected an identifier - lib\core\data_source\mqtt_data_source.dart:162:23 - missing_identifier
+  error - The argument type 'Map<String, dynamic>' can't be assigned to the parameter type 'OximeterModel'.  - lib\core\data_source\mqtt_data_source.dart:172:33 - argument_type_not_assignable
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:178:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:196:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:198:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:214:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\data_source\mqtt_data_source.dart:221:7 - avoid_print
+warning - The value of the field '_patientMeasurementSub' isn't used - lib\features\monitor\cubit\monitor_cubit.dart:18:23 - unused_field
+  error - Undefined name 'OximeterModel' - lib\features\monitor\cubit\monitor_cubit.dart:34:25 - undefined_identifier
+  error - Undefined name 'BPModel' - lib\features\monitor\cubit\monitor_cubit.dart:35:19 - undefined_identifier
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\cubit\monitor_cubit.dart:48:50 - undefined_getter
+  error - Undefined name '_vitalsSub' - lib\features\monitor\cubit\monitor_cubit.dart:52:5 - undefined_identifier
+  error - The method 'getVitalsData' isn't defined for the type 'MonitorRepository' - lib\features\monitor\cubit\monitor_cubit.dart:52:29 - undefined_method
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\cubit\monitor_cubit.dart:54:53 - undefined_getter
+  error - Undefined name '_bpLiveSub' - lib\features\monitor\cubit\monitor_cubit.dart:65:5 - undefined_identifier
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\cubit\monitor_cubit.dart:67:53 - undefined_getter
+  error - Undefined name '_ecgSub' - lib\features\monitor\cubit\monitor_cubit.dart:72:5 - undefined_identifier
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\cubit\monitor_cubit.dart:74:53 - undefined_getter
+  error - Undefined name '_oximeterSub' - lib\features\monitor\cubit\monitor_cubit.dart:79:5 - undefined_identifier
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\cubit\monitor_cubit.dart:81:53 - undefined_getter
+  error - The operator '[]' isn't defined for the type 'OximeterModel' - lib\features\monitor\cubit\monitor_cubit.dart:84:22 - undefined_operator
+  error - The operator '[]' isn't defined for the type 'OximeterModel' - lib\features\monitor\cubit\monitor_cubit.dart:85:27 - undefined_operator
+  error - Undefined class 'VitalsModel' - lib\features\monitor\cubit\monitor_cubit.dart:95:21 - undefined_class
+  error - The named parameter 'patientMeasurement' is required, but there's no corresponding argument - lib\features\monitor\cubit\monitor_cubit.dart:111:7 - missing_required_argument
+  error - The named parameter 'currentVitals' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:112:9 - undefined_named_parameter
+  error - The named parameter 'ecgHistory' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:113:9 - undefined_named_parameter
+  error - The named parameter 'connectionStatus' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:114:9 - undefined_named_parameter
+  error - The named parameter 'lastDataReceived' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:115:9 - undefined_named_parameter
+  error - The named parameter 'deviceOnline' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:116:9 - undefined_named_parameter
+  error - The named parameter 'message' isn't defined - lib\features\monitor\cubit\monitor_cubit.dart:131:36 - undefined_named_parameter
+  error - Undefined name '_vitalsSub' - lib\features\monitor\cubit\monitor_cubit.dart:138:5 - undefined_identifier
+  error - Undefined name '_bpLiveSub' - lib\features\monitor\cubit\monitor_cubit.dart:139:5 - undefined_identifier
+  error - Undefined name '_ecgSub' - lib\features\monitor\cubit\monitor_cubit.dart:140:5 - undefined_identifier
+  error - Undefined name '_oximeterSub' - lib\features\monitor\cubit\monitor_cubit.dart:141:5 - undefined_identifier
+  error - The getter 'deviceOnline' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:36:50 - undefined_getter
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:47:26 - undefined_getter
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:48:28 - undefined_getter
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:49:27 - undefined_getter
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:50:27 - undefined_getter
+  error - The getter 'currentVitals' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:51:36 - undefined_getter
+  error - The getter 'ecgHistory' isn't defined for the type 'MonitorConnected' - lib\features\monitor\monitor_screen.dart:53:34 - undefined_getter
+
