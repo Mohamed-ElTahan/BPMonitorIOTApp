@@ -1,15 +1,22 @@
-import '../../monitor/models/vitals_model.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class HistoryState {}
+import '../model/history_model.dart';
+
+sealed class HistoryState extends Equatable {
+  const HistoryState();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class HistoryLoading extends HistoryState {}
 
 class HistoryLoaded extends HistoryState {
-  final List<VitalsModel> history;
-  HistoryLoaded(this.history);
+  final List<HistoryModel> history;
+  const HistoryLoaded(this.history);
 }
 
 class HistoryError extends HistoryState {
   final String message;
-  HistoryError(this.message);
+  const HistoryError(this.message);
 }

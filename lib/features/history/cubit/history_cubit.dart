@@ -7,6 +7,6 @@ class HistoryCubit extends Cubit<HistoryState> {
   Future<void> loadHistory() async {
     emit(HistoryLoading());
     await Future.delayed(const Duration(seconds: 2));
-    emit(HistoryLoaded(const []));
+    emit(HistoryLoaded([]));
   }
 }

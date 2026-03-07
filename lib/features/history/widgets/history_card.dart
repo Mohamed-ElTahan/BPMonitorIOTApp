@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../monitor/models/vitals_model.dart';
+import '../model/history_model.dart';
 
 class HistoryCard extends StatelessWidget {
-  final VitalsModel vitals;
-
-  const HistoryCard({super.key, required this.vitals});
+  final HistoryModel data;
+  const HistoryCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    String dateStr = DateFormat(
-      'MMM dd, yyyy - HH:mm',
-    ).format(vitals.timestamp);
+    String dateStr = DateFormat('MMM dd, yyyy - HH:mm').format(data.timestamp);
 
     return Card(
       child: Padding(
@@ -29,19 +26,19 @@ class HistoryCard extends StatelessWidget {
                 _buildMetric(
                   context,
                   Icons.favorite,
-                  '${vitals.heartRate} BPM',
+                  '${data.heartRate} BPM',
                   AppColors.heartRateRed,
                 ),
                 _buildMetric(
                   context,
                   Icons.water_drop,
-                  '${vitals.spo2}%',
+                  '${data.spo2}%',
                   AppColors.spo2Cyan,
                 ),
                 _buildMetric(
                   context,
                   Icons.speed,
-                  '${vitals.systolicBP}/${vitals.diastolicBP} mmHg',
+                  '${data.systolic}/${data.diastolic} mmHg',
                   AppColors.bpAmber,
                 ),
               ],
