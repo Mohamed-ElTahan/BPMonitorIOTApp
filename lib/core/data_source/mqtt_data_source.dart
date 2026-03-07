@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:bp_monitor_iot/features/monitor/models/bp_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-
-import '../../features/monitor/models/vitals_model.dart';
+import '../../features/monitor/models/oximeter_model.dart';
+import '../../features/monitor/models/patient_measurement_model.dart';
 import '../constants/app_constants.dart';
 
 class MqttDataSource {
@@ -34,18 +35,17 @@ class MqttDataSource {
   // ---------------------------------------------------------------------------
   // Streams
   // ---------------------------------------------------------------------------
-  final _bpController = StreamController<VitalsModel>.broadcast();
+  final _bpController = StreamController<BPModel>.broadcast();
   final _bpLiveController = StreamController<int>.broadcast();
   final _ecgController = StreamController<double>.broadcast();
-  final _oximeterController =
-      StreamController<Map<String, dynamic>>.broadcast();
+  final _oximeterController = StreamController<OximeterModel>.broadcast();
   final _deviceStatusController = StreamController<bool>.broadcast();
   final _connectionController = StreamController<bool>.broadcast();
 
-  Stream<VitalsModel> get bpStream => _bpController.stream;
+  Stream<BPModel> get bpStream => _bpController.stream;
   Stream<int> get bpLiveStream => _bpLiveController.stream;
   Stream<double> get ecgStream => _ecgController.stream;
-  Stream<Map<String, dynamic>> get oximeterStream => _oximeterController.stream;
+  Stream<OximeterModel> get oximeterStream => _oximeterController.stream;
   Stream<bool> get deviceStatusStream => _deviceStatusController.stream;
   Stream<bool> get connectionStream => _connectionController.stream;
 
@@ -85,8 +85,12 @@ class MqttDataSource {
     if (kIsWeb) {
       client = MqttBrowserClient('wss://$broker/mqtt', clientId);
     } else {
-      client = MqttServerClient(broker, clientId);
-      client.port = port;
+      final serverClient = MqttServerClient(broker, clientId);
+      serverClient.port = port;
+      serverClient.secure = true;
+      client = serverClient;
+      // For HiveMQ Cloud, the server certificate is typically trusted by default OS/browser.
+      // If manually trusted certificates are needed, set client.securityContext.
     }
     client.keepAlivePeriod = 20;
     client.autoReconnect = false;
@@ -157,7 +161,8 @@ class MqttDataSource {
       );
 
       if (topic == AppConstants.topicBP && !_bpController.isClosed) {
-        _bpController.add(VitalsModel.fromJson(jsonDecode(message)));
+        final bp = PatientMeasurementModel.fromJson(jsonDecode(message));
+        _bpController.add(bp.bP);
       } else if (topic == AppConstants.topicBPLive &&
           !_bpLiveController.isClosed) {
         final value = int.tryParse(message);
@@ -167,7 +172,13 @@ class MqttDataSource {
         if (value != null) _ecgController.add(value);
       } else if (topic == AppConstants.topicOximeter &&
           !_oximeterController.isClosed) {
-        _oximeterController.add(jsonDecode(message) as Map<String, dynamic>);
+        final data = jsonDecode(message) as Map<String, dynamic>;
+        _oximeterController.add(
+          OximeterModel(
+            spo2: (data['spo2'] as num?)?.toInt() ?? 0,
+            heartRate: (data['hr'] as num?)?.toInt() ?? 0,
+          ),
+        );
       } else if (topic == AppConstants.topicStatus &&
           !_deviceStatusController.isClosed) {
         _deviceStatusController.add(message == "online");
