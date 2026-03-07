@@ -1,30 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bp_monitor_iot/features/monitor/models/bp_model.dart';
+
 import '../../../core/data_source/mqtt_data_source.dart';
-import '../models/vitals_model.dart';
+import '../models/oximeter_model.dart';
 
 class MonitorRepository {
   final MqttDataSource mqtt;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   MonitorRepository(this.mqtt);
 
-  Stream<VitalsModel> getVitalsData() {
-    return mqtt.bpStream.map((model) {
-      _firestore.collection("vitals").add(model.toJson());
-      return model;
-    });
-  }
-
-  Stream<bool> getDeviceStatus() {
-    return mqtt.deviceStatusStream;
-  }
-
+  // send command to ESP32 to start/stop measurements
   void sendCommand(String command) {
     mqtt.publishCommand(command);
   }
 
+  // get connection status for MQTT
   Stream<bool> getConnectionStatus() {
     return mqtt.connectionStream;
+  }
+
+  // get device status for ESP32
+  Stream<bool> getDeviceStatus() {
+    return mqtt.deviceStatusStream;
+  }
+
+  Stream<BPModel> getBPStream() {
+    return mqtt.bpStream;
   }
 
   Stream<int> getBPLiveStream() {
@@ -35,7 +34,7 @@ class MonitorRepository {
     return mqtt.ecgStream;
   }
 
-  Stream<Map<String, dynamic>> getOximeterStream() {
+  Stream<OximeterModel> getOximeterStream() {
     return mqtt.oximeterStream;
   }
 }
