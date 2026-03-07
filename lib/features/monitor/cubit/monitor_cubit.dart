@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../repository/monitor_repository.dart';
-import '../models/vitals_model.dart';
+import '../models/patient_measurement_model.dart';
+import '../models/bp_model.dart';
+import '../models/oximeter_model.dart';
 import 'monitor_state.dart';
 
 class MonitorCubit extends Cubit<MonitorState> {
@@ -15,7 +17,7 @@ class MonitorCubit extends Cubit<MonitorState> {
 
   StreamSubscription? _connectionSub;
   StreamSubscription? _deviceSub;
-  StreamSubscription? _vitalsSub;
+  StreamSubscription? _bpSub;
   StreamSubscription? _bpLiveSub;
   StreamSubscription? _ecgSub;
   StreamSubscription? _oximeterSub;
@@ -28,13 +30,17 @@ class MonitorCubit extends Cubit<MonitorState> {
     // Attach listeners immediately
     _connectionSub = repository.getConnectionStatus().listen((connected) {
       if (!connected && state is MonitorConnected) {
-        emit(const MonitorDisconnected(message: "Connection Lost"));
+        emit(const MonitorDisconnected());
       } else if (connected && state is! MonitorConnected) {
         emit(
           MonitorConnected(
-            currentVitals: VitalsModel.empty(),
-            ecgHistory: const [],
-            connectionStatus: "Connected to HiveMQ",
+            currentVitals: PatientMeasurementModel(
+              ecg: const [],
+              oximeter: OximeterModel(spo2: 0, heartRate: 0),
+              bP: BPModel(systolic: 0, diastolic: 0),
+              livePressure: const [],
+              timestamp: DateTime.now(),
+            ),
           ),
         );
       }
@@ -48,30 +54,31 @@ class MonitorCubit extends Cubit<MonitorState> {
       }
     });
 
-    _vitalsSub = repository.getVitalsData().listen((vitals) {
+    _bpLiveSub = repository.getBPLiveStream().listen((bpLive) {
       if (state is MonitorConnected) {
         final current = (state as MonitorConnected).currentVitals;
         _updateState(
           current.copyWith(
-            systolicBP: vitals.systolicBP,
-            diastolicBP: vitals.diastolicBP,
-            timestamp: vitals.timestamp,
+            livePressure: [bpLive.toDouble()],
+            timestamp: DateTime.now(),
           ),
         );
       }
     });
 
-    _bpLiveSub = repository.getBPLiveStream().listen((bpLive) {
+    _bpSub = repository.getBPStream().listen((bpModel) {
       if (state is MonitorConnected) {
         final current = (state as MonitorConnected).currentVitals;
-        _updateState(current.copyWith(livePressure: [bpLive.toDouble()]));
+        _updateState(current.copyWith(bP: bpModel, timestamp: DateTime.now()));
       }
     });
 
     _ecgSub = repository.getEcgStream().listen((ecgPoint) {
       if (state is MonitorConnected) {
         final current = (state as MonitorConnected).currentVitals;
-        _updateState(current.copyWith(ecg: [ecgPoint]));
+        _updateState(
+          current.copyWith(ecg: [ecgPoint], timestamp: DateTime.now()),
+        );
       }
     });
 
@@ -79,10 +86,7 @@ class MonitorCubit extends Cubit<MonitorState> {
       if (state is MonitorConnected) {
         final current = (state as MonitorConnected).currentVitals;
         _updateState(
-          current.copyWith(
-            spo2: oxi['spo2'] as int? ?? current.spo2,
-            heartRate: oxi['hr'] as int? ?? current.heartRate,
-          ),
+          current.copyWith(oximeter: oxi, timestamp: DateTime.now()),
         );
       }
     });
@@ -91,7 +95,7 @@ class MonitorCubit extends Cubit<MonitorState> {
     repository.mqtt.connect();
   }
 
-  void _updateState(VitalsModel vitals) {
+  void _updateState(PatientMeasurementModel vitals) {
     if (state is! MonitorConnected) return;
 
     String currentStatus = 'Connected to HiveMQ';
@@ -108,11 +112,11 @@ class MonitorCubit extends Cubit<MonitorState> {
 
     emit(
       MonitorConnected(
-        currentVitals: vitals,
-        ecgHistory: updatedHistory,
-        connectionStatus: currentStatus,
-        lastDataReceived: vitals.timestamp,
-        deviceOnline: _deviceOnline,
+        currentVitals: vitals.copyWith(
+          ecgHistory: updatedHistory,
+          connectionStatus: currentStatus,
+          deviceOnline: _deviceOnline,
+        ),
       ),
     );
   }
@@ -127,14 +131,14 @@ class MonitorCubit extends Cubit<MonitorState> {
 
   void disconnect() {
     repository.mqtt.dispose();
-    emit(const MonitorDisconnected(message: 'Disconnected by user'));
+    emit(const MonitorDisconnected());
   }
 
   @override
   Future<void> close() {
     _connectionSub?.cancel();
     _deviceSub?.cancel();
-    _vitalsSub?.cancel();
+    _bpSub?.cancel();
     _bpLiveSub?.cancel();
     _ecgSub?.cancel();
     _oximeterSub?.cancel();
