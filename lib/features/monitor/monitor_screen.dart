@@ -33,7 +33,9 @@ class _MonitorScreen extends StatelessWidget {
         child: BlocBuilder<MonitorCubit, MonitorState>(
           builder: (context, state) {
             final isConnected = state is MonitorConnected;
-            final isOnline = isConnected ? state.deviceOnline : false;
+            final isOnline = isConnected
+                ? state.currentVitals.deviceOnline
+                : false;
 
             double hr = 0;
             int spo2 = 0;
@@ -44,13 +46,13 @@ class _MonitorScreen extends StatelessWidget {
             List<double> ecgHistory = [];
 
             if (isConnected) {
-              hr = state.currentVitals.heartRate.toDouble();
-              spo2 = state.currentVitals.spo2;
-              sys = state.currentVitals.systolicBP;
-              dia = state.currentVitals.diastolicBP;
+              hr = state.currentVitals.oximeter.heartRate.toDouble();
+              spo2 = state.currentVitals.oximeter.spo2;
+              sys = state.currentVitals.bP.systolic;
+              dia = state.currentVitals.bP.diastolic;
               livePressure = state.currentVitals.livePressure;
-              lastDataReceived = state.lastDataReceived;
-              ecgHistory = state.ecgHistory;
+
+              ecgHistory = state.currentVitals.ecgHistory;
             }
 
             return Column(
