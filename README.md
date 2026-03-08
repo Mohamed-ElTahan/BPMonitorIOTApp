@@ -6,7 +6,7 @@
 ![MQTT](https://img.shields.io/badge/MQTT-3C3C3C?style=for-the-badge&logo=mqtt&logoColor=white)
 ![ESP32](https://img.shields.io/badge/ESP32-E7352C?style=for-the-badge&logo=espressif&logoColor=white)
 
-CSBPM is a professional-grade IoT ecosystem designed for real-time cardiovascular health monitoring. The system integrates hardware (ESP32), cloud messaging (MQTT), and backend persistence (Firebase) into a unified, cross-platform Flutter application.
+CSBPM is a professional-grade IoT ecosystem designed for real-time cardiovascular health monitoring. The system integrates hardware (ESP32), cloud messaging (MQTT), and backend persistence (Firebase) into a unified, high-performance mobile application (Android & iOS).
 
 ---
 
@@ -22,7 +22,7 @@ CSBPM is a professional-grade IoT ecosystem designed for real-time cardiovascula
 
 ## 🛠 Tech Stack
 
-- **Frontend**: Flutter (3.x)
+- **Frontend**: Flutter (Mobile Only: Android & iOS)
 - **State Management**: BLoC / Cubit (Event-driven architecture)
 - **Communication**: MQTT (HiveMQ Broker) with SSL/TLS encryption.
 - **Backend**: Firebase Firestore & Core services.

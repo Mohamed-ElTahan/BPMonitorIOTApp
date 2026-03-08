@@ -19,6 +19,7 @@ dependencies:
   fl_chart: ^1.1.1
   equatable: ^2.0.5
   intl: ^0.20.2
+  typed_data: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -38,12 +39,3 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons/appIcon.png"
-  web:
-    generate: true
-    image_path: "assets/icons/appIcon.png"
-    background_color: "#ffffff"
-    theme_color: "#ffffff"
-  windows:
-    generate: true
-    image_path: "assets/icons/appIcon.png"
-    icon_size: 256
