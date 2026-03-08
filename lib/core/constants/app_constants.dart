@@ -5,7 +5,6 @@ class AppConstants {
   static const String mqttBrokerUrl =
       'baecf45d3be147d89925b349a789b8f5.s1.eu.hivemq.cloud';
   static const int mqttPort = 8883;
-  static const int mqttWebSocketPort = 8884;
   static const String mqttClientId = 'bp_monitor_app';
   static const String mqttUsername = 'CSBPM';
   static const String mqttPassword = 'comm-SBPM1';
