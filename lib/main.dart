@@ -1,10 +1,10 @@
-import 'package:bp_monitor_iot/features/home/cubit/home_cubit.dart';
 import 'package:bp_monitor_iot/features/main_scaffold/main_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'core/data_source/mqtt/mqtt_data_source.dart';
 import 'features/monitor/repository/monitor_repository.dart';
+import 'features/history/repository/history_repository.dart';
 import 'core/cubits/mqtt_connection_cubit.dart';
 import 'core/data_source/firebase/firestore_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +30,10 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(create: (_) => FirestoreService()),
         RepositoryProvider(
           create: (context) =>
+              HistoryRepository(context.read<FirestoreService>()),
+        ),
+        RepositoryProvider(
+          create: (context) =>
               MonitorRepository(context.read<MqttDataSource>()),
         ),
       ],
@@ -38,10 +42,6 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) =>
                 MqttConnectionCubit(context.read<MqttDataSource>()),
-          ),
-          BlocProvider(
-            create: (context) =>
-                HomeCubit(context.read<MqttDataSource>().client),
           ),
         ],
         child: MaterialApp(
