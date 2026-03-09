@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/cubits/mqtt_connection_cubit.dart';
+
+class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+
+  const MainAppBar({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title),
+          Text('BP Monitor IOT', style: Theme.of(context).textTheme.labelSmall),
+        ],
+      ),
+      actions: [
+        BlocBuilder<MqttConnectionCubit, MqttConnectionStatus>(
+          builder: (context, status) {
+            final isConnected = status == MqttConnectionStatus.connected;
+            final isConnecting = status == MqttConnectionStatus.connecting;
+            final color = isConnected
+                ? const Color.fromARGB(255, 9, 255, 1)
+                : (isConnecting ? Colors.orangeAccent : Colors.redAccent);
+            final statusText = isConnected
+                ? 'Broker: Online'
+                : (isConnecting ? 'Broker: Connecting' : 'Broker: Offline');
+
+            return Container(
+              margin: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: color.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.4),
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    statusText,
+                    style: TextStyle(
+                      color: color.withValues(alpha: 0.9),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
