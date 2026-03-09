@@ -5,9 +5,12 @@ import '../models/patient_measurement_model.dart';
 import '../models/bp_model.dart';
 import '../models/oximeter_model.dart';
 import 'monitor_state.dart';
+import '../../history/model/history_model.dart';
+import '../../../core/data_source/firebase/firestore_service.dart';
 
 class MonitorCubit extends Cubit<MonitorState> {
   final MonitorRepository repository;
+  final FirestoreService firestoreService;
 
   // Rolling list of ECG points (max 150 points for graph)
   final List<double> _rollingEcgPoints = [];
@@ -22,7 +25,8 @@ class MonitorCubit extends Cubit<MonitorState> {
   StreamSubscription? _ecgSub;
   StreamSubscription? _oximeterSub;
 
-  MonitorCubit(this.repository) : super(MonitorInitial());
+  MonitorCubit(this.repository, this.firestoreService)
+    : super(MonitorInitial());
 
   void initialize() {
     emit(MonitorConnecting());
@@ -132,6 +136,27 @@ class MonitorCubit extends Cubit<MonitorState> {
   void disconnect() {
     repository.mqtt.dispose();
     emit(const MonitorDisconnected());
+  }
+
+  Future<void> saveVitals() async {
+    if (state is! MonitorConnected) return;
+    final vitals = (state as MonitorConnected).currentVitals;
+
+    final historyEntry = HistoryModel(
+      bloodPressure: "${vitals.bP.systolic}/${vitals.bP.diastolic}",
+      livePressure: vitals.livePressure.map((e) => e.toInt()).toList(),
+      heartRate: vitals.oximeter.heartRate,
+      spo2: vitals.oximeter.spo2,
+      ecg: vitals.ecgHistory,
+      timestamp: DateTime.now(),
+    );
+
+    try {
+      await firestoreService.saveHistory(historyEntry);
+      // We could emit a temporary "Success" status or similar if needed
+    } catch (e) {
+      // Handle error (maybe emit a state with error message)
+    }
   }
 
   @override
