@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../repository/monitor_repository.dart';
 import '../models/patient_measurement_model.dart';
 import '../models/bp_model.dart';
 import '../models/oximeter_model.dart';
 import 'monitor_state.dart';
-import '../../history/model/history_model.dart';
+import '../../history/model/patient_model.dart';
 import '../../../core/data_source/firebase/firestore_service.dart';
 
 class MonitorCubit extends Cubit<MonitorState> {
@@ -29,7 +30,22 @@ class MonitorCubit extends Cubit<MonitorState> {
     : super(MonitorInitial());
 
   void initialize() {
-    emit(MonitorConnecting());
+    final currentlyConnected = repository.mqtt.isConnected;
+    if (currentlyConnected) {
+      emit(
+        MonitorConnected(
+          currentVitals: PatientMeasurementModel(
+            ecg: const [],
+            oximeter: OximeterModel(spo2: 0, heartRate: 0),
+            bP: BPModel(systolic: 0, diastolic: 0),
+            livePressure: const [],
+            timestamp: DateTime.now(),
+          ),
+        ),
+      );
+    } else {
+      emit(MonitorConnecting());
+    }
 
     // Attach listeners immediately
     _connectionSub = repository.getConnectionStatus().listen((connected) {
@@ -138,11 +154,18 @@ class MonitorCubit extends Cubit<MonitorState> {
     emit(const MonitorDisconnected());
   }
 
-  Future<void> saveVitals() async {
+  Future<void> saveVitals({
+    required String name,
+    required String sex,
+    required int age,
+  }) async {
     if (state is! MonitorConnected) return;
     final vitals = (state as MonitorConnected).currentVitals;
 
-    final historyEntry = HistoryModel(
+    final historyEntry = PatientModel(
+      name: name,
+      sex: sex,
+      age: age,
       bloodPressure: "${vitals.bP.systolic}/${vitals.bP.diastolic}",
       livePressure: vitals.livePressure.map((e) => e.toInt()).toList(),
       heartRate: vitals.oximeter.heartRate,
@@ -153,9 +176,8 @@ class MonitorCubit extends Cubit<MonitorState> {
 
     try {
       await firestoreService.saveHistory(historyEntry);
-      // We could emit a temporary "Success" status or similar if needed
     } catch (e) {
-      // Handle error (maybe emit a state with error message)
+      if (kDebugMode) print('❌ Error saving vitals: $e');
     }
   }
 
