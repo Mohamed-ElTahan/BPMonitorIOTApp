@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -14,18 +15,29 @@ class AppTheme {
         error: AppColors.heartRateRed,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.lightCardBackground,
+        backgroundColor: Colors.white,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: AppColors.lightTextPrimary,
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
         iconTheme: IconThemeData(color: AppColors.lightTextPrimary),
+        scrolledUnderElevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
+        shape: Border(
+          bottom: BorderSide(
+            color: Color(0xFFE2E8F0), // Slate 200
+            width: 1,
+          ),
+        ),
       ),
-      iconTheme: const IconThemeData(color: AppColors.lightTextPrimary),
       textTheme: const TextTheme(
         headlineMedium: TextStyle(
           fontSize: 24,
@@ -68,11 +80,16 @@ class AppTheme {
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.lightCardBackground,
+        backgroundColor: Colors.white,
         selectedItemColor: AppColors.ecgGreen,
         unselectedItemColor: AppColors.lightTextSecondary,
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: TextStyle(fontSize: 12),
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 10,
       ),
     );
   }
