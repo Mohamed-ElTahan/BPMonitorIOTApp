@@ -4,6 +4,8 @@ import 'cubit/monitor_cubit.dart';
 import 'cubit/monitor_state.dart';
 import 'repository/monitor_repository.dart';
 import '../../core/data_source/firebase/firestore_service.dart';
+import '../../core/widgets/snackbars/app_snackbars.dart';
+import '../../core/widgets/dialogs/patient_info_dialog.dart';
 import 'widgets/ecg_chart_card_widget.dart';
 import 'widgets/monitor_controls_widget.dart';
 import 'widgets/vitals_row_widget.dart';
@@ -50,44 +52,51 @@ class _MonitorScreen extends StatelessWidget {
             ecgHistory = state.currentVitals.ecgHistory;
           }
 
-          return Column(
-            children: [
-              VitalsRowWidget(
-                livePressure: livePressure,
-                sys: sys,
-                dia: dia,
-                hr: hr,
-                spo2: spo2,
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: EcgChartCardWidget(
-                  isConnected: isConnected,
-                  ecgHistory: ecgHistory,
+          return Scaffold(
+            body: Column(
+              children: [
+                VitalsRowWidget(
+                  livePressure: livePressure,
+                  sys: sys,
+                  dia: dia,
+                  hr: hr,
+                  spo2: spo2,
                 ),
-              ),
-              const SizedBox(height: 24),
-              MonitorControlsWidget(
-                isConnected: isConnected,
-                onStart: () => context.read<MonitorCubit>().startMeasurement(),
-                onStop: () => context.read<MonitorCubit>().stopMeasurement(),
-              ),
-              const SizedBox(height: 16),
-              if (isConnected)
-                ElevatedButton.icon(
-                  onPressed: () => context.read<MonitorCubit>().saveVitals(),
-                  icon: const Icon(Icons.save),
-                  label: const Text('Save to History'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: EcgChartCardWidget(
+                    isConnected: isConnected,
+                    ecgHistory: ecgHistory,
                   ),
                 ),
-            ],
+                const SizedBox(height: 8),
+                MonitorControlsWidget(
+                  isConnected: isConnected,
+                  onStart: () =>
+                      context.read<MonitorCubit>().startMeasurement(),
+                  onSave: () async {
+                    final result = await showDialog<Map<String, dynamic>>(
+                      context: context,
+                      builder: (context) => const PatientInfoDialog(),
+                    );
+
+                    if (result != null && context.mounted) {
+                      await context.read<MonitorCubit>().saveVitals(
+                        name: result['name'] as String,
+                        sex: result['sex'] as String,
+                        age: result['age'] as int,
+                      );
+                      if (context.mounted) {
+                        AppSnackbars.showSuccess(
+                          context,
+                          'Measurement saved to history',
+                        );
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
           );
         },
       ),
