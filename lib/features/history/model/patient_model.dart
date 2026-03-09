@@ -1,14 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HistoryModel {
-  final String bloodPressure; // 120/80
+class PatientModel {
+  final String name;
+  final String sex;
+  final int age;
+  final String bloodPressure;
   final List<int> livePressure;
   final int heartRate;
   final int spo2;
   final List<double> ecg;
   final DateTime timestamp;
 
-  const HistoryModel({
+  const PatientModel({
+    required this.name,
+    required this.sex,
+    required this.age,
     required this.bloodPressure,
     required this.livePressure,
     required this.heartRate,
@@ -18,8 +24,11 @@ class HistoryModel {
   });
 
   // from Json
-  factory HistoryModel.fromJson(Map<String, dynamic> json) {
-    return HistoryModel(
+  factory PatientModel.fromJson(Map<String, dynamic> json) {
+    return PatientModel(
+      name: json['name'] ?? "Unknown",
+      sex: json['sex'] ?? "Unknown",
+      age: json['age'] ?? 0,
       bloodPressure: json['bloodPressure'] ?? "0/0",
       livePressure: List<int>.from(json['livePressure'] ?? []),
       heartRate: json['heartRate'] ?? 0,
@@ -34,6 +43,9 @@ class HistoryModel {
   // to Json
   Map<String, dynamic> toJson() {
     return {
+      'name': name,
+      'sex': sex,
+      'age': age,
       'bloodPressure': bloodPressure,
       'livePressure': livePressure,
       'heartRate': heartRate,
