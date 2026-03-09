@@ -17,6 +17,8 @@ class MqttDataSource {
   // Expose the raw client for callers that need direct access (e.g. HomeCubit).
   MqttClient get client => _manager.client;
 
+  bool get isConnected => _manager.isConnected;
+
   // ─── Output Streams ───────────────────────────────────────────────────────
   final _bpController = StreamController<BPModel>.broadcast();
   final _bpLiveController = StreamController<int>.broadcast();
@@ -69,8 +71,9 @@ class MqttDataSource {
       MqttQos.atLeastOnce,
       payload.payload!,
     );
-    if (kDebugMode)
+    if (kDebugMode) {
       print('📤 Published: $command → ${AppConstants.topicCommand}');
+    }
   }
 
   void dispose() {

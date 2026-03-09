@@ -45,14 +45,16 @@ class MqttClientManager {
 
   Future<void> connect() async {
     final connected = isConnected;
-    if (kDebugMode)
+    if (kDebugMode) {
       _log(
         '🔌 Connect requested: isConnected=$connected, isConnecting=$_isConnecting',
       );
+    }
 
     if (connected || _isConnecting || _isDisposed) {
-      if (kDebugMode && connected)
+      if (kDebugMode && connected) {
         _log('⏭️ Already connected, skipping connect()');
+      }
       return;
     }
     _isConnecting = true;
@@ -103,9 +105,13 @@ class MqttClientManager {
   }
 
   // ─── Public Getters ───────────────────────────────────────────────────────
-  bool get isConnected =>
-      _isInitialized &&
-      client.connectionStatus?.state == MqttConnectionState.connected;
+  bool get isConnected {
+    if (_isInitialized &&
+        client.connectionStatus?.state == MqttConnectionState.connected) {
+      return true;
+    }
+    return false;
+  }
 
   void _setupClient(String clientId) {
     client = MqttServerClient(broker, clientId)
@@ -130,7 +136,9 @@ class MqttClientManager {
 
     _updatesSubscription?.cancel();
     _updatesSubscription = client.updates!.listen((events) {
-      if (!_messageController.isClosed) _messageController.add(events);
+      if (!_messageController.isClosed) {
+        _messageController.add(events);
+      }
     });
   }
 
@@ -146,7 +154,9 @@ class MqttClientManager {
   }
 
   void _scheduleReconnect() {
-    if (_isDisposed) return;
+    if (_isDisposed) {
+      return;
+    }
     _reconnectAttempts++;
     final delay = min(pow(2, _reconnectAttempts), 32).toInt();
     _log('⏳ Retrying in $delay seconds...');
