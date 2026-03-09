@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/history_model.dart';
+import '../model/patient_model.dart';
 
 sealed class HistoryState extends Equatable {
   const HistoryState();
@@ -12,7 +12,7 @@ sealed class HistoryState extends Equatable {
 class HistoryLoading extends HistoryState {}
 
 class HistoryLoaded extends HistoryState {
-  final List<HistoryModel> history;
+  final List<PatientModel> history;
   const HistoryLoaded(this.history);
 }
 

@@ -1,16 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/data_source/firebase/firestore_service.dart';
+import 'package:bp_monitor_iot/features/history/repository/history_repository.dart';
 import 'history_state.dart';
 
 class HistoryCubit extends Cubit<HistoryState> {
-  final FirestoreService firestoreService;
+  final HistoryRepository _historyRepository;
 
-  HistoryCubit(this.firestoreService) : super(HistoryLoading());
+  HistoryCubit(this._historyRepository) : super(HistoryLoading());
 
   Future<void> loadHistory() async {
     try {
       emit(HistoryLoading());
-      final history = await firestoreService.getAllHistory();
+      final history = await _historyRepository.getHistory();
       if (history.isEmpty) {
         emit(const HistoryLoaded([]));
       } else {
@@ -19,11 +19,5 @@ class HistoryCubit extends Cubit<HistoryState> {
     } catch (e) {
       emit(HistoryError(e.toString()));
     }
-  }
-
-  void listenToHistory() {
-    firestoreService.getHistoryStream().listen((history) {
-      emit(HistoryLoaded(history));
-    });
   }
 }
