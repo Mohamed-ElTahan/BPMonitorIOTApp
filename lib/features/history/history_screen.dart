@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../core/data_source/firebase/firestore_service.dart';
+import 'package:bp_monitor_iot/core/theme/app_colors.dart';
+import 'package:bp_monitor_iot/features/history/repository/history_repository.dart';
 import 'cubit/history_cubit.dart';
 import 'cubit/history_state.dart';
 import 'widgets/history_card.dart';
@@ -13,7 +13,7 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          HistoryCubit(context.read<FirestoreService>())..loadHistory(),
+          HistoryCubit(context.read<HistoryRepository>())..loadHistory(),
       child: const _HistoryScreen(),
     );
   }
@@ -27,13 +27,6 @@ class _HistoryScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.lightScaffoldBackground,
-      appBar: AppBar(
-        title: const Text('Medical History'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: AppColors.lightTextPrimary,
-      ),
       body: RefreshIndicator(
         onRefresh: () => context.read<HistoryCubit>().loadHistory(),
         color: AppColors.ecgGreen,
@@ -85,7 +78,7 @@ class _HistoryScreen extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.history_outlined,
-                        color: Colors.grey.withOpacity(0.5),
+                        color: Colors.grey.withValues(alpha: 0.5),
                         size: 80,
                       ),
                       const SizedBox(height: 16),
