@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/monitor_cubit.dart';
 import 'cubit/monitor_state.dart';
 import 'repository/monitor_repository.dart';
-import 'widgets/device_status_widget.dart';
+import '../../core/data_source/firebase/firestore_service.dart';
 import 'widgets/ecg_chart_card_widget.dart';
-import 'widgets/float_action_button_widget.dart';
 import 'widgets/monitor_controls_widget.dart';
 import 'widgets/vitals_row_widget.dart';
 
@@ -15,8 +14,10 @@ class MonitorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MonitorCubit(context.read<MonitorRepository>())..initialize(),
+      create: (context) => MonitorCubit(
+        context.read<MonitorRepository>(),
+        context.read<FirestoreService>(),
+      )..initialize(),
       child: const _MonitorScreen(),
     );
   }
@@ -27,67 +28,68 @@ class _MonitorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<MonitorCubit, MonitorState>(
-          builder: (context, state) {
-            final isConnected = state is MonitorConnected;
-            final isOnline = isConnected
-                ? state.currentVitals.deviceOnline
-                : false;
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: BlocBuilder<MonitorCubit, MonitorState>(
+        builder: (context, state) {
+          final isConnected = state is MonitorConnected;
 
-            double hr = 0;
-            int spo2 = 0;
-            double sys = 0;
-            double dia = 0;
-            List<double> livePressure = [];
-            DateTime? lastDataReceived;
-            List<double> ecgHistory = [];
+          double hr = 0;
+          int spo2 = 0;
+          double sys = 0;
+          double dia = 0;
+          List<double> livePressure = [];
+          List<double> ecgHistory = [];
 
-            if (isConnected) {
-              hr = state.currentVitals.oximeter.heartRate.toDouble();
-              spo2 = state.currentVitals.oximeter.spo2;
-              sys = state.currentVitals.bP.systolic;
-              dia = state.currentVitals.bP.diastolic;
-              livePressure = state.currentVitals.livePressure;
+          if (isConnected) {
+            hr = state.currentVitals.oximeter.heartRate.toDouble();
+            spo2 = state.currentVitals.oximeter.spo2;
+            sys = state.currentVitals.bP.systolic;
+            dia = state.currentVitals.bP.diastolic;
+            livePressure = state.currentVitals.livePressure;
+            ecgHistory = state.currentVitals.ecgHistory;
+          }
 
-              ecgHistory = state.currentVitals.ecgHistory;
-            }
-
-            return Column(
-              children: [
-                DeviceStatusWidget(isOnline: isOnline),
-                VitalsRowWidget(
-                  livePressure: livePressure,
-                  sys: sys,
-                  dia: dia,
-                  hr: hr,
-                  spo2: spo2,
+          return Column(
+            children: [
+              VitalsRowWidget(
+                livePressure: livePressure,
+                sys: sys,
+                dia: dia,
+                hr: hr,
+                spo2: spo2,
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: EcgChartCardWidget(
+                  isConnected: isConnected,
+                  ecgHistory: ecgHistory,
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: EcgChartCardWidget(
-                    isConnected: isConnected,
-                    lastDataReceived: lastDataReceived,
-                    ecgHistory: ecgHistory,
+              ),
+              const SizedBox(height: 24),
+              MonitorControlsWidget(
+                isConnected: isConnected,
+                onStart: () => context.read<MonitorCubit>().startMeasurement(),
+                onStop: () => context.read<MonitorCubit>().stopMeasurement(),
+              ),
+              const SizedBox(height: 16),
+              if (isConnected)
+                ElevatedButton.icon(
+                  onPressed: () => context.read<MonitorCubit>().saveVitals(),
+                  icon: const Icon(Icons.save),
+                  label: const Text('Save to History'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                MonitorControlsWidget(
-                  isConnected: isConnected,
-                  onStart: () =>
-                      context.read<MonitorCubit>().startMeasurement(),
-                  onStop: () => context.read<MonitorCubit>().stopMeasurement(),
-                ),
-                const SizedBox(height: 16),
-              ],
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatActionButtonWidget(
-        onTap: () => context.read<MonitorCubit>().initialize(),
+            ],
+          );
+        },
       ),
     );
   }
