@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../core/theme/app_colors.dart';
-import '../model/history_model.dart';
+import 'package:bp_monitor_iot/core/theme/app_colors.dart';
+import '../model/patient_model.dart';
 
 class HistoryCard extends StatelessWidget {
-  final HistoryModel data;
+  final PatientModel data;
   const HistoryCard({super.key, required this.data});
 
   @override
@@ -20,7 +20,7 @@ class HistoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -33,7 +33,7 @@ class HistoryCard extends StatelessWidget {
             children: [
               Container(
                 width: 80,
-                color: AppColors.ecgGreen.withOpacity(0.1),
+                color: AppColors.ecgGreen.withValues(alpha: 0.1),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +48,7 @@ class HistoryCard extends StatelessWidget {
                     Text(
                       timeStr,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.ecgGreen.withOpacity(0.7),
+                        color: AppColors.ecgGreen.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -58,7 +58,35 @@ class HistoryCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data.name,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${data.sex} • ${data.age} years',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Divider(height: 1),
+                      const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
