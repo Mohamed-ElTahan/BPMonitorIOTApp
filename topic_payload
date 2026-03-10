@@ -1,0 +1,8 @@
+
+publish
+
+CSBPM/status ===> online
+CSBPM/bp  ====> {"systolic": 120, "diastolic": 80}
+CSBPM/oximeter  ====> {"spo2":98,"hr":75}
+CSBPM/bpLive ====> double ===> 88.6
+CSBPM/ecg  =====> double ===> 88.6

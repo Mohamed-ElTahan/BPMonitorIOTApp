@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/cubits/mqtt_connection_cubit.dart';
+import '../../../core/widgets/wifi_status_widget.dart';
 import 'package:bp_monitor_iot/features/main_scaffold/cubit/navigation_cubit.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -19,6 +20,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
+        // WiFi status — always visible on all screens
+        const Padding(
+          padding: EdgeInsets.only(right: 6),
+          child: WifiStatusWidget(),
+        ),
+        // MQTT broker status — only on Monitor screen (index 0)
         BlocBuilder<NavigationCubit, int>(
           builder: (context, index) {
             if (index != 0) return const SizedBox.shrink();
