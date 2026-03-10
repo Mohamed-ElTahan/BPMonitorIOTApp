@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_buffers.dart' show Uint8Buffer;
-import '../../constants/app_constants.dart';
+import '../../constants/hive_mq_constant.dart';
 
 // Manages the full MQTT lifecycle: connect, reconnect, subscribe, publish.
 class MqttClientManager {
@@ -67,9 +67,10 @@ class MqttClientManager {
         .withClientIdentifier(clientId)
         .authenticateAs(username, password)
         .startClean()
-        .withWillTopic(AppConstants.topicStatus)
+        .withWillTopic(HiveMqConstant.topicStatus.topic)
         .withWillMessage('offline')
-        .withWillQos(MqttQos.atLeastOnce);
+        .withWillQos(HiveMqConstant.topicStatus.qos)
+        .withWillRetain();
 
     try {
       await client.connect();
@@ -85,8 +86,15 @@ class MqttClientManager {
     if (isConnected) client.subscribe(topic, qos);
   }
 
-  void publish(String topic, MqttQos qos, Uint8Buffer payload) {
-    if (isConnected) client.publishMessage(topic, qos, payload);
+  void publish(
+    String topic,
+    MqttQos qos,
+    Uint8Buffer payload, {
+    bool retain = false,
+  }) {
+    if (isConnected) {
+      client.publishMessage(topic, qos, payload, retain: retain);
+    }
   }
 
   Future<void> waitForConnection() async {
