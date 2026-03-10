@@ -2,44 +2,32 @@ import 'bp_model.dart';
 import 'oximeter_model.dart';
 
 class PatientMeasurementModel {
+  final BPModel bloodPressure;
   final OximeterModel oximeter;
-  final BPModel bP;
   final List<double> livePressure;
   final List<double> ecg;
-  final List<double> ecgHistory;
-  final String connectionStatus;
-  final bool deviceOnline;
   final DateTime timestamp;
 
   const PatientMeasurementModel({
-    required this.ecg,
+    required this.bloodPressure,
     required this.oximeter,
-    required this.bP,
     required this.livePressure,
+    required this.ecg,
     required this.timestamp,
-    this.ecgHistory = const [],
-    this.connectionStatus = '',
-    this.deviceOnline = false,
   });
 
   PatientMeasurementModel copyWith({
     OximeterModel? oximeter,
-    BPModel? bP,
+    BPModel? bloodPressure,
     List<double>? livePressure,
     List<double>? ecg,
-    List<double>? ecgHistory,
-    String? connectionStatus,
-    bool? deviceOnline,
     DateTime? timestamp,
   }) {
     return PatientMeasurementModel(
       oximeter: oximeter ?? this.oximeter,
-      bP: bP ?? this.bP,
+      bloodPressure: bloodPressure ?? this.bloodPressure,
       livePressure: livePressure ?? this.livePressure,
       ecg: ecg ?? this.ecg,
-      ecgHistory: ecgHistory ?? this.ecgHistory,
-      connectionStatus: connectionStatus ?? this.connectionStatus,
-      deviceOnline: deviceOnline ?? this.deviceOnline,
       timestamp: timestamp ?? this.timestamp,
     );
   }
@@ -59,9 +47,9 @@ class PatientMeasurementModel {
         spo2: (json['spo2'] as num?)?.toInt() ?? 0,
         heartRate: (json['hr'] as num?)?.toInt() ?? 0,
       ),
-      bP: BPModel(
-        systolic: (json['bp'] as num?)?.toDouble() ?? 0,
-        diastolic: (json['bp'] as num?)?.toDouble() ?? 0,
+      bloodPressure: BPModel(
+        systolic: (json['bp'] as num?)?.toDouble() ?? 0.0,
+        diastolic: (json['bp'] as num?)?.toDouble() ?? 0.0,
       ),
       livePressure:
           (json['live_pressure'] as List<num>?)
@@ -79,7 +67,7 @@ class PatientMeasurementModel {
     return {
       'ecg': ecg,
       'oximeter': oximeter,
-      'bp': bP,
+      'bloodPressure': bloodPressure,
       'live_pressure': livePressure,
       'timestamp': timestamp.toIso8601String(),
     };
