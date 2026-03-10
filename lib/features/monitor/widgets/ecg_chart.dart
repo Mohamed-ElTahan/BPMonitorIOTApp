@@ -26,8 +26,8 @@ class EcgChart extends StatelessWidget {
         ),
         minX: 0,
         maxX: 150, // Fixed window size
-        minY: -2, // Adjust based on expected ECG voltage range
-        maxY: 2, // Adjust based on expected ECG voltage range
+        minY: -4, // Adjust based on expected ECG voltage range
+        maxY: 4, // Adjust based on expected ECG voltage range
         lineBarsData: [
           LineChartBarData(
             spots: dataPoints
