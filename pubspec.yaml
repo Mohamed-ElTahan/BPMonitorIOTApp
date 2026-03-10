@@ -20,6 +20,7 @@ dependencies:
   equatable: ^2.0.5
   intl: ^0.20.2
   typed_data: ^1.4.0
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -38,4 +39,4 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icons/appIcon.png"
+  image_path: "assets/icons/CSBPM_icon.jpeg"
