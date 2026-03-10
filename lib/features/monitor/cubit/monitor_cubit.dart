@@ -7,11 +7,11 @@ import '../models/bp_model.dart';
 import '../models/oximeter_model.dart';
 import 'monitor_state.dart';
 import '../../history/model/patient_model.dart';
-import '../../../core/data_source/firebase/firestore_service.dart';
+import '../../../core/data_source/firebase/firestore_data_source.dart';
 
 class MonitorCubit extends Cubit<MonitorState> {
   final MonitorRepository repository;
-  final FirestoreService firestoreService;
+  final FirestoreDataSource firestoreService;
 
   // Rolling list of ECG points (max 150 points for graph)
   final List<double> _rollingEcgPoints = [];
@@ -27,7 +27,17 @@ class MonitorCubit extends Cubit<MonitorState> {
   StreamSubscription? _oximeterSub;
 
   MonitorCubit(this.repository, this.firestoreService)
-    : super(MonitorInitial());
+    : super(
+        MonitorInitial(
+          currentVitals: PatientMeasurementModel(
+            bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
+            oximeter: OximeterModel(spo2: 0, heartRate: 0),
+            livePressure: const [],
+            ecg: const [],
+            timestamp: DateTime.now(),
+          ),
+        ),
+      );
 
   void initialize() {
     final currentlyConnected = repository.mqtt.isConnected;
@@ -37,7 +47,7 @@ class MonitorCubit extends Cubit<MonitorState> {
           currentVitals: PatientMeasurementModel(
             ecg: const [],
             oximeter: OximeterModel(spo2: 0, heartRate: 0),
-            bP: BPModel(systolic: 0, diastolic: 0),
+            bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
             livePressure: const [],
             timestamp: DateTime.now(),
           ),
@@ -57,7 +67,7 @@ class MonitorCubit extends Cubit<MonitorState> {
             currentVitals: PatientMeasurementModel(
               ecg: const [],
               oximeter: OximeterModel(spo2: 0, heartRate: 0),
-              bP: BPModel(systolic: 0, diastolic: 0),
+              bloodPressure: BPModel(systolic: 0, diastolic: 0),
               livePressure: const [],
               timestamp: DateTime.now(),
             ),
@@ -89,7 +99,9 @@ class MonitorCubit extends Cubit<MonitorState> {
     _bpSub = repository.getBPStream().listen((bpModel) {
       if (state is MonitorConnected) {
         final current = (state as MonitorConnected).currentVitals;
-        _updateState(current.copyWith(bP: bpModel, timestamp: DateTime.now()));
+        _updateState(
+          current.copyWith(bloodPressure: bpModel, timestamp: DateTime.now()),
+        );
       }
     });
 
@@ -118,8 +130,6 @@ class MonitorCubit extends Cubit<MonitorState> {
   void _updateState(PatientMeasurementModel vitals) {
     if (state is! MonitorConnected) return;
 
-    String currentStatus = 'Connected to HiveMQ';
-
     // Add new ECG points to rolling history
     _rollingEcgPoints.addAll(vitals.ecg);
 
@@ -130,15 +140,7 @@ class MonitorCubit extends Cubit<MonitorState> {
 
     final updatedHistory = List<double>.from(_rollingEcgPoints);
 
-    emit(
-      MonitorConnected(
-        currentVitals: vitals.copyWith(
-          ecgHistory: updatedHistory,
-          connectionStatus: currentStatus,
-          deviceOnline: _deviceOnline,
-        ),
-      ),
-    );
+    emit(MonitorConnected(currentVitals: vitals.copyWith(ecg: updatedHistory)));
   }
 
   void startMeasurement() {
@@ -166,12 +168,13 @@ class MonitorCubit extends Cubit<MonitorState> {
       name: name,
       sex: sex,
       age: age,
-      bloodPressure: "${vitals.bP.systolic}/${vitals.bP.diastolic}",
-      livePressure: vitals.livePressure.map((e) => e.toInt()).toList(),
+      bloodPressure:
+          "${vitals.bloodPressure.systolic}/${vitals.bloodPressure.diastolic}",
+      livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
       heartRate: vitals.oximeter.heartRate,
       spo2: vitals.oximeter.spo2,
-      ecg: vitals.ecgHistory,
       timestamp: DateTime.now(),
+      ecg: [],
     );
 
     try {
