@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/monitor_cubit.dart';
 import 'cubit/monitor_state.dart';
 import 'repository/monitor_repository.dart';
-import '../../core/data_source/firebase/firestore_service.dart';
+import '../../core/data_source/firebase/firestore_data_source.dart';
 import '../../core/widgets/snackbars/app_snackbars.dart';
 import '../../core/widgets/dialogs/patient_info_dialog.dart';
 import 'widgets/ecg_chart_card_widget.dart';
@@ -18,7 +18,7 @@ class MonitorScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => MonitorCubit(
         context.read<MonitorRepository>(),
-        context.read<FirestoreService>(),
+        context.read<FirestoreDataSource>(),
       )..initialize(),
       child: const _MonitorScreen(),
     );
@@ -36,20 +36,20 @@ class _MonitorScreen extends StatelessWidget {
         builder: (context, state) {
           final isConnected = state is MonitorConnected;
 
-          double hr = 0;
+          int hr = 0;
           int spo2 = 0;
           double sys = 0;
           double dia = 0;
           List<double> livePressure = [];
-          List<double> ecgHistory = [];
+          List<double> ecg = [];
 
           if (isConnected) {
-            hr = state.currentVitals.oximeter.heartRate.toDouble();
+            hr = state.currentVitals.oximeter.heartRate;
             spo2 = state.currentVitals.oximeter.spo2;
-            sys = state.currentVitals.bP.systolic;
-            dia = state.currentVitals.bP.diastolic;
+            sys = state.currentVitals.bloodPressure.systolic;
+            dia = state.currentVitals.bloodPressure.diastolic;
             livePressure = state.currentVitals.livePressure;
-            ecgHistory = state.currentVitals.ecgHistory;
+            ecg = state.currentVitals.ecg;
           }
 
           return Scaffold(
@@ -66,7 +66,7 @@ class _MonitorScreen extends StatelessWidget {
                 Expanded(
                   child: EcgChartCardWidget(
                     isConnected: isConnected,
-                    ecgHistory: ecgHistory,
+                    ecgData: ecg,
                   ),
                 ),
                 const SizedBox(height: 8),
