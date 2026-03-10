@@ -26,7 +26,7 @@ class MonitorRepository {
     return mqtt.bpStream;
   }
 
-  Stream<int> getBPLiveStream() {
+  Stream<double> getBPLiveStream() {
     return mqtt.bpLiveStream;
   }
 
