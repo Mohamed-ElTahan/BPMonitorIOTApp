@@ -6,7 +6,7 @@ class VitalsRowWidget extends StatelessWidget {
   final List<double> livePressure;
   final double sys;
   final double dia;
-  final double hr;
+  final int hr;
   final int spo2;
 
   const VitalsRowWidget({
