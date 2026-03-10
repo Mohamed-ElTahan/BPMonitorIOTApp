@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// TODO: extendent PateintMeasurementModel
 class PatientModel {
   final String name;
   final String sex;

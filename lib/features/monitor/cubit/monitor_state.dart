@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../models/patient_measurement_model.dart';
 
 sealed class MonitorState extends Equatable {
@@ -9,7 +8,14 @@ sealed class MonitorState extends Equatable {
   List<Object?> get props => [];
 }
 
-class MonitorInitial extends MonitorState {}
+class MonitorInitial extends MonitorState {
+  final PatientMeasurementModel currentVitals;
+
+  const MonitorInitial({required this.currentVitals});
+
+  @override
+  List<Object?> get props => [currentVitals];
+}
 
 class MonitorConnecting extends MonitorState {}
 
