@@ -92,6 +92,13 @@ class HistoryCard extends StatelessWidget {
                         children: [
                           _buildMetric(
                             context,
+                            Icons.speed,
+                            data.bloodPressure,
+                            'mmHg',
+                            AppColors.bpAmber,
+                          ),
+                          _buildMetric(
+                            context,
                             Icons.favorite,
                             '${data.heartRate}',
                             'BPM',
@@ -103,13 +110,6 @@ class HistoryCard extends StatelessWidget {
                             '${data.spo2}',
                             '%',
                             AppColors.spo2Cyan,
-                          ),
-                          _buildMetric(
-                            context,
-                            Icons.speed,
-                            data.bloodPressure,
-                            'mmHg',
-                            AppColors.bpAmber,
                           ),
                         ],
                       ),

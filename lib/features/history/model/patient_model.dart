@@ -5,7 +5,7 @@ class PatientModel {
   final String sex;
   final int age;
   final String bloodPressure;
-  final List<int> livePressure;
+  final List<double> livePressure;
   final int heartRate;
   final int spo2;
   final List<double> ecg;
@@ -30,7 +30,7 @@ class PatientModel {
       sex: json['sex'] ?? "Unknown",
       age: json['age'] ?? 0,
       bloodPressure: json['bloodPressure'] ?? "0/0",
-      livePressure: List<int>.from(json['livePressure'] ?? []),
+      livePressure: List<double>.from(json['livePressure'] ?? []),
       heartRate: json['heartRate'] ?? 0,
       spo2: json['spo2'] ?? 0,
       ecg: List<double>.from(json['ecg'] ?? []),

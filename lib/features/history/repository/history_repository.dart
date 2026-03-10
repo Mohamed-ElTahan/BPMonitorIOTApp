@@ -1,12 +1,12 @@
-import 'package:bp_monitor_iot/core/data_source/firebase/firestore_service.dart';
+import 'package:bp_monitor_iot/core/data_source/firebase/firestore_data_source.dart';
 import 'package:bp_monitor_iot/features/history/model/patient_model.dart';
 
 class HistoryRepository {
-  final FirestoreService _firestoreService;
+  final FirestoreDataSource _firestoreDataSource;
 
-  HistoryRepository(this._firestoreService);
+  HistoryRepository(this._firestoreDataSource);
 
   Future<List<PatientModel>> getHistory() async {
-    return await _firestoreService.getAllHistory();
+    return await _firestoreDataSource.getAllHistory();
   }
 }
