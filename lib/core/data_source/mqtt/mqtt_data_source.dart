@@ -148,23 +148,23 @@ class MqttDataSource {
       case HiveMqConstant.kTopicBP:
         _bpController.add(data as BPModel);
       case HiveMqConstant.kTopicBPLive:
-        _bpLiveController.add(data as double);
+        _bpLiveController.add((data as num).toDouble());
       case HiveMqConstant.kTopicEcg:
-        _ecgController.add(data as double);
+        _ecgController.add((data as num).toDouble());
       case HiveMqConstant.kTopicOximeter:
         _oximeterController.add(data as OximeterModel);
-      case HiveMqConstant.kTopicStatus:
+      case HiveMqConstant.kTopicAppStatus:
         _deviceStatusController.add(data as bool);
     }
   }
 
   void _publishAppOnline() {
-    final payload = MqttClientPayloadBuilder()..addString('online');
+    final payload = MqttClientPayloadBuilder()..addString('appOnline');
     // retain: true → broker stores this message; new subscribers
     // immediately receive the last known device status on connect.
     _manager.publish(
-      HiveMqConstant.topicStatus.topic,
-      HiveMqConstant.topicStatus.qos,
+      HiveMqConstant.topicAppStatus.topic,
+      HiveMqConstant.topicAppStatus.qos,
       payload.payload!,
       retain: true,
     );
