@@ -1,7 +1,9 @@
 
-publish
-
-CSBPM/status ===> online
+app publish
+CSBPM/appStatus ===> appOnline or appOffline
+CSBPM/command ===> start or stop
+-----------------------------------------------------
+app recieve
 CSBPM/bp  ====> {"systolic": 120, "diastolic": 80}
 CSBPM/oximeter  ====> {"spo2":98,"hr":75}
 CSBPM/bpLive ====> double ===> 88.6
