@@ -12,14 +12,14 @@ class MqttPayloadParser {
         case HiveMqConstant.kTopicBP:
           return BPModel.fromJson(jsonDecode(payload) as Map<String, dynamic>);
         case HiveMqConstant.kTopicBPLive:
-          return int.tryParse(payload);
+          return double.tryParse(payload);
         case HiveMqConstant.kTopicEcg:
           return double.tryParse(payload);
         case HiveMqConstant.kTopicOximeter:
           return OximeterModel.fromJson(
             jsonDecode(payload) as Map<String, dynamic>,
           );
-        case HiveMqConstant.kTopicStatus:
+        case HiveMqConstant.kTopicAppStatus:
           return payload == 'online';
       }
     } catch (e) {
