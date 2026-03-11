@@ -13,11 +13,9 @@ class MonitorCubit extends Cubit<MonitorState> {
   final MonitorRepository repository;
   final FirestoreDataSource firestoreService;
 
-  // Rolling list of ECG points (max 150 points for graph)
+  // Rolling buffer for ECG points (max 150 points for graph).
   final List<double> _rollingEcgPoints = [];
-  final int _maxDataPoints = 150;
-
-  bool _deviceOnline = false;
+  static const int _maxDataPoints = 150;
 
   StreamSubscription? _connectionSub;
   StreamSubscription? _deviceSub;
@@ -27,128 +25,126 @@ class MonitorCubit extends Cubit<MonitorState> {
   StreamSubscription? _oximeterSub;
 
   MonitorCubit(this.repository, this.firestoreService)
-    : super(
-        MonitorInitial(
-          currentVitals: PatientMeasurementModel(
-            bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
-            oximeter: OximeterModel(spo2: 0, heartRate: 0),
-            livePressure: const [],
-            ecg: const [],
-            timestamp: DateTime.now(),
-          ),
-        ),
-      );
+    : super(MonitorInitial(currentVitals: _emptyVitals()));
+
+  // ---------------------------------------------------------------------------
+  // Initialization
+  // ---------------------------------------------------------------------------
 
   void initialize() {
-    final currentlyConnected = repository.mqtt.isConnected;
-    if (currentlyConnected) {
-      emit(
-        MonitorConnected(
-          currentVitals: PatientMeasurementModel(
-            ecg: const [],
-            oximeter: OximeterModel(spo2: 0, heartRate: 0),
-            bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
-            livePressure: const [],
-            timestamp: DateTime.now(),
-          ),
-        ),
-      );
-    } else {
-      emit(MonitorConnecting());
-    }
+    final alreadyConnected = repository.mqtt.isConnected;
 
-    // Attach listeners immediately
+    emit(
+      alreadyConnected
+          ? MonitorConnected(currentVitals: _emptyVitals())
+          : MonitorConnecting(),
+    );
+
     _connectionSub = repository.getConnectionStatus().listen((connected) {
       if (!connected && state is MonitorConnected) {
         emit(const MonitorDisconnected());
       } else if (connected && state is! MonitorConnected) {
         emit(
           MonitorConnected(
-            currentVitals: PatientMeasurementModel(
-              ecg: const [],
-              oximeter: OximeterModel(spo2: 0, heartRate: 0),
-              bloodPressure: BPModel(systolic: 0, diastolic: 0),
-              livePressure: const [],
-              timestamp: DateTime.now(),
-            ),
+            currentVitals: _emptyVitals(),
           ),
         );
       }
     });
 
     _deviceSub = repository.getDeviceStatus().listen((isOnline) {
-      _deviceOnline = isOnline;
-      if (state is MonitorConnected) {
-        // We trigger an update to reflect the device status if needed
-        _updateState((state as MonitorConnected).currentVitals);
-      }
+      // Offline status removed as it is now handled in the app bar
     });
 
     _bpLiveSub = repository.getBPLiveStream().listen((bpLive) {
       if (state is MonitorConnected) {
-        final current = (state as MonitorConnected).currentVitals;
-        _updateState(
-          current.copyWith(
-            livePressure: [bpLive.toDouble()],
-            timestamp: DateTime.now(),
-          ),
+        final current = state as MonitorConnected;
+        _updateVitals(
+          current.currentVitals.copyWith(livePressure: [bpLive.toDouble()]),
         );
       }
     });
 
     _bpSub = repository.getBPStream().listen((bpModel) {
       if (state is MonitorConnected) {
-        final current = (state as MonitorConnected).currentVitals;
-        _updateState(
-          current.copyWith(bloodPressure: bpModel, timestamp: DateTime.now()),
-        );
+        final current = state as MonitorConnected;
+        _updateVitals(current.currentVitals.copyWith(bloodPressure: bpModel));
       }
     });
 
     _ecgSub = repository.getEcgStream().listen((ecgPoint) {
       if (state is MonitorConnected) {
-        final current = (state as MonitorConnected).currentVitals;
-        _updateState(
-          current.copyWith(ecg: [ecgPoint], timestamp: DateTime.now()),
-        );
+        final current = state as MonitorConnected;
+        _updateVitals(current.currentVitals.copyWith(ecg: [ecgPoint]));
       }
     });
 
     _oximeterSub = repository.getOximeterStream().listen((oxi) {
       if (state is MonitorConnected) {
-        final current = (state as MonitorConnected).currentVitals;
-        _updateState(
-          current.copyWith(oximeter: oxi, timestamp: DateTime.now()),
-        );
+        final current = state as MonitorConnected;
+        _updateVitals(current.currentVitals.copyWith(oximeter: oxi));
       }
     });
 
-    // Start connection in background
     repository.mqtt.connect();
   }
 
-  void _updateState(PatientMeasurementModel vitals) {
-    if (state is! MonitorConnected) return;
+  // ---------------------------------------------------------------------------
+  // Private helpers
+  // ---------------------------------------------------------------------------
 
-    // Add new ECG points to rolling history
-    _rollingEcgPoints.addAll(vitals.ecg);
-
-    // Trim history if it exceeds max length
-    while (_rollingEcgPoints.length > _maxDataPoints) {
-      _rollingEcgPoints.removeAt(0);
-    }
-
-    final updatedHistory = List<double>.from(_rollingEcgPoints);
-
-    emit(MonitorConnected(currentVitals: vitals.copyWith(ecg: updatedHistory)));
+  /// Returns a zeroed-out vitals object used when connection is first established.
+  static PatientMeasurementModel _emptyVitals() {
+    return PatientMeasurementModel(
+      bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
+      oximeter: OximeterModel(spo2: 0, heartRate: 0),
+      livePressure: const [],
+      ecg: const [],
+    );
   }
 
+  /// Appends incoming ECG points to the rolling buffer (O(n) trim via sublist),
+  /// then emits a new [MonitorConnected] state preserving existing flags.
+  void _updateVitals(PatientMeasurementModel vitals) {
+    if (state is! MonitorConnected) return;
+
+    final current = state as MonitorConnected;
+
+    // Append new ECG points.
+    _rollingEcgPoints.addAll(vitals.ecg);
+
+    // O(n) trim — drop oldest points when the buffer exceeds the cap.
+    if (_rollingEcgPoints.length > _maxDataPoints) {
+      final excess = _rollingEcgPoints.length - _maxDataPoints;
+      _rollingEcgPoints.removeRange(0, excess);
+    }
+
+    emit(
+      MonitorConnected(
+        currentVitals: vitals.copyWith(
+          ecg: List<double>.from(_rollingEcgPoints),
+        ),
+        isMeasuring: current.isMeasuring,
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Public commands
+  // ---------------------------------------------------------------------------
+
   void startMeasurement() {
+    if (state is! MonitorConnected) return;
+    final current = state as MonitorConnected;
     repository.sendCommand('start');
+    emit(current.copyWithState(isMeasuring: true));
   }
 
   void stopMeasurement() {
+    if (state is! MonitorConnected) return;
+    final current = state as MonitorConnected;
     repository.sendCommand('stop');
+    emit(current.copyWithState(isMeasuring: false));
   }
 
   void disconnect() {
@@ -156,33 +152,63 @@ class MonitorCubit extends Cubit<MonitorState> {
     emit(const MonitorDisconnected());
   }
 
+  /// Saves current vitals to Firestore.
+  /// Emits [MonitorSaving] while in progress, then [MonitorSaveResult].
   Future<void> saveVitals({
     required String name,
     required String sex,
     required int age,
   }) async {
     if (state is! MonitorConnected) return;
-    final vitals = (state as MonitorConnected).currentVitals;
+    final current = state as MonitorConnected;
+    final vitals = current.currentVitals;
 
-    final historyEntry = PatientModel(
-      name: name,
-      sex: sex,
-      age: age,
-      bloodPressure:
-          "${vitals.bloodPressure.systolic}/${vitals.bloodPressure.diastolic}",
-      livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
-      heartRate: vitals.oximeter.heartRate,
-      spo2: vitals.oximeter.spo2,
-      timestamp: DateTime.now(),
-      ecg: [],
+    emit(
+      MonitorSaving(
+        currentVitals: vitals,
+        isMeasuring: current.isMeasuring,
+      ),
     );
 
     try {
-      await firestoreService.saveHistory(historyEntry);
+      await firestoreService.saveHistory(
+        PatientModel(
+          name: name,
+          sex: sex,
+          age: age,
+          bloodPressure:
+              '${vitals.bloodPressure.systolic}/${vitals.bloodPressure.diastolic}',
+          livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
+          heartRate: vitals.oximeter.heartRate,
+          spo2: vitals.oximeter.spo2,
+          timestamp: DateTime.now(),
+          ecg: const [],
+        ),
+      );
+
+      emit(
+        MonitorSaveResult(
+          currentVitals: vitals,
+          isMeasuring: current.isMeasuring,
+          success: true,
+        ),
+      );
     } catch (e) {
       if (kDebugMode) print('❌ Error saving vitals: $e');
+      emit(
+        MonitorSaveResult(
+          currentVitals: vitals,
+          isMeasuring: current.isMeasuring,
+          success: false,
+          error: e.toString(),
+        ),
+      );
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Lifecycle
+  // ---------------------------------------------------------------------------
 
   @override
   Future<void> close() {
