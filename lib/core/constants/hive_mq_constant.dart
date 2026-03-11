@@ -26,30 +26,40 @@ class HiveMqConstant {
   static const String kTopicBPLive = 'CSBPM/bpLive';
   static const String kTopicEcg = 'CSBPM/ecg';
   static const String kTopicOximeter = 'CSBPM/oximeter';
-  static const String kTopicStatus = 'CSBPM/status';
+  static const String kTopicAppStatus = 'CSBPM/appStatus';
   static const String kTopicCommand = 'CSBPM/command';
 
   // ── Subscribe Topics (string + QoS paired) ────────────────────────────────
-  /// Final BP reading — guaranteed delivery (QoS 1).
+  /// Final Blood Pressure reading.
+  /// Uses QoS 1 (At Least Once) to guarantee delivery of critical health data.
   static const topicBP = MqttTopicConfig(kTopicBP, MqttQos.atLeastOnce);
 
-  /// Live BP waveform — high frequency, best-effort (QoS 0).
+  /// Live Blood Pressure waveform.
+  /// Uses QoS 0 (At Most Once) for high-frequency data where speed is prioritized over reliability.
   static const topicBPLive = MqttTopicConfig(kTopicBPLive, MqttQos.atMostOnce);
 
-  /// ECG signal — high frequency, best-effort (QoS 0).
+  /// Real-time ECG signal data.
+  /// Uses QoS 0 (At Most Once) to minimize latency for continuous waveform streaming.
   static const topicEcg = MqttTopicConfig(kTopicEcg, MqttQos.atMostOnce);
 
-  /// Oximeter reading — guaranteed delivery (QoS 1).
+  /// Pulse Oximeter readings (SpO2 and Heart Rate).
+  /// Uses QoS 1 (At Least Once) to ensure these vitals are accurately received.
   static const topicOximeter = MqttTopicConfig(
     kTopicOximeter,
     MqttQos.atLeastOnce,
   );
 
-  /// Device status — guaranteed delivery + retained (QoS 1).
-  static const topicStatus = MqttTopicConfig(kTopicStatus, MqttQos.atLeastOnce);
+  /// App Heartbeat & Availability status.
+  /// Uses QoS 1 (At Least Once) with Retention and LWT (Last Will and Testament).
+  /// Publishes "appOnline" on connect and "appOffline" automatically via broker on crash/lost connection.
+  static const topicAppStatus = MqttTopicConfig(
+    kTopicAppStatus,
+    MqttQos.atLeastOnce,
+  );
 
   // ── Publish Topics ────────────────────────────────────────────────────────
-  /// Command to device — guaranteed delivery (QoS 1).
+  /// Remote control commands sent from the app to the IoT device.
+  /// Uses QoS 1 (At Least Once) to ensure the device reliably receives instructions (e.g., 'start').
   static const topicCommand = MqttTopicConfig(
     kTopicCommand,
     MqttQos.atLeastOnce,
@@ -61,6 +71,6 @@ class HiveMqConstant {
     topicBPLive,
     topicEcg,
     topicOximeter,
-    topicStatus,
+    topicAppStatus,
   ];
 }
