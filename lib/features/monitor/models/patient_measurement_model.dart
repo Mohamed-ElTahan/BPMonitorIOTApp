@@ -6,14 +6,12 @@ class PatientMeasurementModel {
   final OximeterModel oximeter;
   final List<double> livePressure;
   final List<double> ecg;
-  final DateTime timestamp;
 
   const PatientMeasurementModel({
     required this.bloodPressure,
     required this.oximeter,
     required this.livePressure,
     required this.ecg,
-    required this.timestamp,
   });
 
   PatientMeasurementModel copyWith({
@@ -21,14 +19,12 @@ class PatientMeasurementModel {
     BPModel? bloodPressure,
     List<double>? livePressure,
     List<double>? ecg,
-    DateTime? timestamp,
   }) {
     return PatientMeasurementModel(
       oximeter: oximeter ?? this.oximeter,
       bloodPressure: bloodPressure ?? this.bloodPressure,
       livePressure: livePressure ?? this.livePressure,
       ecg: ecg ?? this.ecg,
-      timestamp: timestamp ?? this.timestamp,
     );
   }
 
@@ -56,9 +52,6 @@ class PatientMeasurementModel {
               ?.map((e) => e.toDouble())
               .toList() ??
           [],
-      timestamp: json['timestamp'] != null
-          ? DateTime.parse(json['timestamp'].toString())
-          : DateTime.now(),
     );
   }
 
@@ -69,7 +62,6 @@ class PatientMeasurementModel {
       'oximeter': oximeter,
       'bloodPressure': bloodPressure,
       'live_pressure': livePressure,
-      'timestamp': timestamp.toIso8601String(),
     };
   }
 }
