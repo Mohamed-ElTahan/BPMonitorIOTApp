@@ -67,9 +67,9 @@ class MqttClientManager {
         .withClientIdentifier(clientId)
         .authenticateAs(username, password)
         .startClean()
-        .withWillTopic(HiveMqConstant.topicStatus.topic)
-        .withWillMessage('offline')
-        .withWillQos(HiveMqConstant.topicStatus.qos)
+        .withWillTopic(HiveMqConstant.topicAppStatus.topic)
+        .withWillMessage('appOffline')
+        .withWillQos(HiveMqConstant.topicAppStatus.qos)
         .withWillRetain();
 
     try {
