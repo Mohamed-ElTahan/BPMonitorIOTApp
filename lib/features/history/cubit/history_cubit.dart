@@ -7,9 +7,9 @@ class HistoryCubit extends Cubit<HistoryState> {
 
   HistoryCubit(this._historyRepository) : super(HistoryLoading());
 
-  Future<void> loadHistory() async {
+  Future<void> loadHistory({bool isRefresh = false}) async {
     try {
-      emit(HistoryLoading());
+      if (!isRefresh) emit(HistoryLoading());
       final history = await _historyRepository.getHistory();
       if (history.isEmpty) {
         emit(const HistoryLoaded([]));
@@ -18,6 +18,18 @@ class HistoryCubit extends Cubit<HistoryState> {
       }
     } catch (e) {
       emit(HistoryError(e.toString()));
+    }
+  }
+
+  Future<void> deletePatientRecord(String id) async {
+    emit(HistoryLoading());
+    try {
+      await _historyRepository.deletePatientRecord(id);
+      emit(const HistoryDeleteSuccess());
+      // Refresh the list silently so the user sees it disappear
+      await loadHistory(isRefresh: true);
+    } catch (e) {
+      emit(HistoryDeleteFailure(e.toString()));
     }
   }
 }

@@ -19,4 +19,19 @@ class HistoryLoaded extends HistoryState {
 class HistoryError extends HistoryState {
   final String message;
   const HistoryError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class HistoryDeleteSuccess extends HistoryState {
+  const HistoryDeleteSuccess();
+}
+
+class HistoryDeleteFailure extends HistoryState {
+  final String message;
+  const HistoryDeleteFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

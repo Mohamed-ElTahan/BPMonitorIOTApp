@@ -9,4 +9,8 @@ class HistoryRepository {
   Future<List<PatientModel>> getHistory() async {
     return await _firestoreDataSource.getAllHistory();
   }
+
+  Future<void> deletePatientRecord(String id) async {
+    return await _firestoreDataSource.deletePatientRecord(id);
+  }
 }
