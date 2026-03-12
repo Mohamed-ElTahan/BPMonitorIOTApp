@@ -1,58 +1,92 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../monitor/models/bp_model.dart';
+import '../../monitor/models/oximeter_model.dart';
+import '../../monitor/models/patient_measurement_model.dart';
+import '../../../core/constants/firebase_constants.dart';
 
-// TODO: extendent PateintMeasurementModel
-class PatientModel {
+class PatientModel extends PatientMeasurementModel {
+  final String? id;
   final String name;
-  final String sex;
+  final String gender;
   final int age;
-  final String bloodPressure;
-  final List<double> livePressure;
-  final int heartRate;
-  final int spo2;
-  final List<double> ecg;
   final DateTime timestamp;
 
   const PatientModel({
+    this.id,
     required this.name,
-    required this.sex,
+    required this.gender,
     required this.age,
-    required this.bloodPressure,
-    required this.livePressure,
-    required this.heartRate,
-    required this.spo2,
-    required this.ecg,
+
+    required super.oximeter,
+    required super.bloodPressure,
+    required super.livePressure,
+    required super.ecg,
     required this.timestamp,
   });
 
   // from Json
-  factory PatientModel.fromJson(Map<String, dynamic> json) {
+  factory PatientModel.fromJson(Map<String, dynamic> json, {String? id}) {
+    // Parse blood pressure for backward compatibility
+    BPModel bp;
+    if (json[FirebaseConstants.keyBloodPressure] is String) {
+      final parts = (json[FirebaseConstants.keyBloodPressure] as String).split('/');
+      bp = BPModel(
+        systolic: parts.isNotEmpty ? double.tryParse(parts[0]) ?? 0.0 : 0.0,
+        diastolic: parts.length > 1 ? double.tryParse(parts[1]) ?? 0.0 : 0.0,
+      );
+    } else if (json[FirebaseConstants.keyBloodPressure] is Map<String, dynamic>) {
+      bp = BPModel.fromJson(json[FirebaseConstants.keyBloodPressure]);
+    } else {
+      bp = BPModel(systolic: 0.0, diastolic: 0.0);
+    }
+
+    // Parse oximeter for backward compatibility
+    OximeterModel oxi;
+    if (json[FirebaseConstants.keyOximeter] is Map<String, dynamic>) {
+      oxi = OximeterModel.fromJson(json[FirebaseConstants.keyOximeter]);
+    } else {
+      oxi = OximeterModel(
+        spo2: (json[FirebaseConstants.keySpo2] as num?)?.toInt() ?? 0,
+        heartRate: (json[FirebaseConstants.keyHeartRate] as num?)?.toInt() ?? 0,
+      );
+    }
+
+    // Parse ECG
+    List<double> ecgPoints = [];
+    final ecgData = json[FirebaseConstants.keyEcg];
+    if (ecgData is List) {
+      ecgPoints = ecgData.map((e) => (e as num).toDouble()).toList();
+    } else if (ecgData is num) {
+      ecgPoints = [ecgData.toDouble()];
+    }
+
     return PatientModel(
-      name: json['name'] ?? "Unknown",
-      sex: json['sex'] ?? "Unknown",
-      age: json['age'] ?? 0,
-      bloodPressure: json['bloodPressure'] ?? "0/0",
-      livePressure: List<double>.from(json['livePressure'] ?? []),
-      heartRate: json['heartRate'] ?? 0,
-      spo2: json['spo2'] ?? 0,
-      ecg: List<double>.from(json['ecg'] ?? []),
-      timestamp: json['timestamp'] is Timestamp
-          ? (json['timestamp'] as Timestamp).toDate()
-          : DateTime.tryParse(json['timestamp'].toString()) ?? DateTime.now(),
+      id: id,
+      name: json[FirebaseConstants.keyName] ?? "Unknown",
+      gender: json[FirebaseConstants.keyGender] ?? "Unknown",
+      age: json[FirebaseConstants.keyAge] ?? 0,
+      timestamp: json[FirebaseConstants.keyTimestamp] is Timestamp
+          ? (json[FirebaseConstants.keyTimestamp] as Timestamp).toDate()
+          : DateTime.tryParse(json[FirebaseConstants.keyTimestamp].toString()) ?? DateTime.now(),
+      bloodPressure: bp,
+      oximeter: oxi,
+      livePressure: List<double>.from(json[FirebaseConstants.keyLivePressure] ?? []),
+      ecg: ecgPoints,
     );
   }
 
   // to Json
+  @override
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'sex': sex,
-      'age': age,
-      'bloodPressure': bloodPressure,
-      'livePressure': livePressure,
-      'heartRate': heartRate,
-      'spo2': spo2,
-      'ecg': ecg,
-      'timestamp': timestamp,
+      FirebaseConstants.keyName: name,
+      FirebaseConstants.keyGender: gender,
+      FirebaseConstants.keyAge: age,
+      FirebaseConstants.keyBloodPressure: bloodPressure.toJson(),
+      FirebaseConstants.keyOximeter: oximeter.toJson(),
+      FirebaseConstants.keyLivePressure: livePressure,
+      FirebaseConstants.keyEcg: ecg,
+      FirebaseConstants.keyTimestamp: timestamp,
     };
   }
 }
