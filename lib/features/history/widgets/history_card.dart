@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:bp_monitor_iot/core/theme/app_colors.dart';
+import 'package:bp_monitor_iot/core/constants/app_strings.dart';
+import 'package:bp_monitor_iot/core/theme/app_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/patient_model.dart';
+import '../cubit/history_cubit.dart';
 
 class HistoryCard extends StatelessWidget {
   final PatientModel data;
@@ -9,7 +13,6 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     String dateStr = DateFormat('MMM dd').format(data.timestamp);
     String timeStr = DateFormat('HH:mm').format(data.timestamp);
 
@@ -40,14 +43,14 @@ class HistoryCard extends StatelessWidget {
                   children: [
                     Text(
                       dateStr,
-                      style: theme.textTheme.titleSmall?.copyWith(
+                      style: AppTheme.textTheme.titleSmall?.copyWith(
                         color: AppColors.ecgGreen,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       timeStr,
-                      style: theme.textTheme.bodySmall?.copyWith(
+                      style: AppTheme.textTheme.bodySmall?.copyWith(
                         color: AppColors.ecgGreen.withValues(alpha: 0.7),
                       ),
                     ),
@@ -64,20 +67,40 @@ class HistoryCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  data.name,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      data.name,
+                                      style: AppTheme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    Text(
+                                      '${data.gender} • ${data.age} ${AppStrings.years}',
+                                      style: AppTheme.textTheme.bodySmall
+                                          ?.copyWith(color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '${data.sex} • ${data.age} years',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey,
+                                IconButton(
+                                  onPressed: () {
+                                    if (data.id != null) {
+                                      context
+                                          .read<HistoryCubit>()
+                                          .deletePatientRecord(data.id!);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.delete, size: 22),
+                                  color: Colors.red.shade600,
+                                  style: IconButton.styleFrom(
+                                    backgroundColor: Colors.red.shade50,
                                   ),
+                                  tooltip: AppStrings.deleteRecord,
                                 ),
                               ],
                             ),
@@ -93,22 +116,22 @@ class HistoryCard extends StatelessWidget {
                           _buildMetric(
                             context,
                             Icons.speed,
-                            data.bloodPressure,
-                            'mmHg',
+                            '${data.bloodPressure.systolic.toInt()}/${data.bloodPressure.diastolic.toInt()}',
+                            AppStrings.unitMmHg,
                             AppColors.bpAmber,
                           ),
                           _buildMetric(
                             context,
                             Icons.favorite,
-                            '${data.heartRate}',
-                            'BPM',
+                            '${data.oximeter.heartRate}',
+                            AppStrings.unitBpm,
                             AppColors.heartRateRed,
                           ),
                           _buildMetric(
                             context,
                             Icons.water_drop,
-                            '${data.spo2}',
-                            '%',
+                            '${data.oximeter.spo2}',
+                            AppStrings.unitPercentage,
                             AppColors.spo2Cyan,
                           ),
                         ],
@@ -137,15 +160,13 @@ class HistoryCard extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: AppTheme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         Text(
           unit,
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: Colors.grey),
+          style: AppTheme.textTheme.labelSmall?.copyWith(color: Colors.grey),
         ),
       ],
     );

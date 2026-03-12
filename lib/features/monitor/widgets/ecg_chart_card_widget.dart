@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 import 'ecg_chart.dart';
 
 class EcgChartCardWidget extends StatelessWidget {
@@ -13,17 +16,15 @@ class EcgChartCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "ECG Waveform",
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.primary,
+              AppStrings.ecgWaveform,
+              style: AppTheme.textTheme.titleMedium?.copyWith(
+                color: AppColors.ecgGreen,
               ),
             ),
 
@@ -36,8 +37,8 @@ class EcgChartCardWidget extends StatelessWidget {
                   }
                   return Center(
                     child: Text(
-                      "Waiting for signal...",
-                      style: theme.textTheme.bodyMedium,
+                      AppStrings.waitingForSignal,
+                      style: AppTheme.textTheme.bodyMedium,
                     ),
                   );
                 },

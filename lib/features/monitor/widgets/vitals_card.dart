@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
 
 class VitalsCard extends StatelessWidget {
   final String title;
@@ -18,40 +19,39 @@ class VitalsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, color: color, size: 20),
                 const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  title,
+                  style: AppTheme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
             const SizedBox(height: 12),
             Text(
               value,
-              style: theme.textTheme.headlineSmall?.copyWith(
+              style: AppTheme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             if (subtitle != null)
-              Text(subtitle!, style: theme.textTheme.labelSmall),
+              Text(subtitle!, style: AppTheme.textTheme.labelSmall),
           ],
         ),
       ),
     );
   }
 }
+

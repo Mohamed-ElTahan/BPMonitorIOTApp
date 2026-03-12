@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../constants/app_strings.dart';
 
 class PatientInfoDialog extends StatefulWidget {
   const PatientInfoDialog({super.key});
@@ -11,7 +12,7 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
-  String _sex = 'Male';
+  String _gender = AppStrings.genderMale;
 
   @override
   void dispose() {
@@ -23,7 +24,7 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Patient Information'),
+      title: const Text(AppStrings.patientInfoTitle),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -34,7 +35,7 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Patient Name',
+                  labelText: AppStrings.patientName,
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -42,7 +43,7 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
+                    return AppStrings.enterName;
                   }
                   return null;
                 },
@@ -51,7 +52,7 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
               TextFormField(
                 controller: _ageController,
                 decoration: InputDecoration(
-                  labelText: 'Age',
+                  labelText: AppStrings.ageLabel,
                   prefixIcon: const Icon(Icons.calendar_today_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -60,17 +61,17 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter age';
+                    return AppStrings.enterAge;
                   }
                   if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
+                    return AppStrings.invalidNumber;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 24),
               const Text(
-                'Sex',
+                AppStrings.genderLabel,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -79,20 +80,20 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
                 child: SegmentedButton<String>(
                   segments: const [
                     ButtonSegment(
-                      value: 'Male',
-                      label: Text('Male'),
+                      value: AppStrings.genderMale,
+                      label: Text(AppStrings.genderMale),
                       icon: Icon(Icons.male),
                     ),
                     ButtonSegment(
-                      value: 'Female',
-                      label: Text('Female'),
+                      value: AppStrings.genderFemale,
+                      label: Text(AppStrings.genderFemale),
                       icon: Icon(Icons.female),
                     ),
                   ],
-                  selected: {_sex},
+                  selected: {_gender},
                   onSelectionChanged: (newSelection) {
                     setState(() {
-                      _sex = newSelection.first;
+                      _gender = newSelection.first;
                     });
                   },
                 ),
@@ -106,7 +107,10 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+          child: const Text(
+            AppStrings.cancel,
+            style: TextStyle(color: Colors.red),
+          ),
         ),
         const SizedBox(width: 8),
         ElevatedButton(
@@ -115,14 +119,17 @@ class _PatientInfoDialogState extends State<PatientInfoDialog> {
               Navigator.pop(context, {
                 'name': _nameController.text,
                 'age': int.parse(_ageController.text),
-                'sex': _sex,
+                'gender': _gender,
               });
             }
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
           ),
-          child: const Text('Save', style: TextStyle(color: Colors.green)),
+          child: const Text(
+            AppStrings.save,
+            style: TextStyle(color: Colors.green),
+          ),
         ),
       ],
     );

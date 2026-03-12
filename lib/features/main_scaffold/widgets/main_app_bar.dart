@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/cubits/mqtt_connection_cubit.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/wifi_status_widget.dart';
 import 'package:bp_monitor_iot/features/main_scaffold/cubit/navigation_cubit.dart';
 
@@ -16,7 +17,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title),
-          Text('BP Monitor IOT', style: Theme.of(context).textTheme.labelSmall),
+          Text(AppStrings.appName,
+              style: Theme.of(context).textTheme.labelSmall),
         ],
       ),
       actions: [
@@ -38,8 +40,10 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ? const Color.fromARGB(255, 9, 255, 1)
                     : (isConnecting ? Colors.orangeAccent : Colors.redAccent);
                 final statusText = isConnected
-                    ? 'Broker: Online'
-                    : (isConnecting ? 'Broker: Connecting' : 'Broker: Offline');
+                    ? AppStrings.brokerOnline
+                    : (isConnecting
+                        ? AppStrings.brokerConnecting
+                        : AppStrings.brokerOffline);
 
                 return Container(
                   margin: const EdgeInsets.only(right: 16),

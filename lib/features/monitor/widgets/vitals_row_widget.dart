@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_colors.dart';
 import 'vitals_card.dart';
 
@@ -20,7 +21,6 @@ class VitalsRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -28,21 +28,21 @@ class VitalsRowWidget extends StatelessWidget {
         SizedBox(
           width: (MediaQuery.of(context).size.width - 44) / 2,
           child: VitalsCard(
-            title: "Live Pressure",
+            title: AppStrings.livePressure,
             value: livePressure.isNotEmpty
                 ? livePressure.last.toStringAsFixed(1)
                 : "--",
-            subtitle: "mmHg",
-            color: theme.colorScheme.secondary,
+            subtitle: AppStrings.unitMmHg,
+            color: AppColors.spo2Cyan,
             icon: Icons.compress,
           ),
         ),
         SizedBox(
           width: (MediaQuery.of(context).size.width - 44) / 2,
           child: VitalsCard(
-            title: "Blood Pressure",
+            title: AppStrings.bloodPressure,
             value: "${sys.toStringAsFixed(1)}/${dia.toStringAsFixed(1)}",
-            subtitle: "mmHg",
+            subtitle: AppStrings.unitMmHg,
             color: AppColors.bpAmber,
             icon: Icons.speed,
           ),
@@ -50,8 +50,8 @@ class VitalsRowWidget extends StatelessWidget {
         SizedBox(
           width: (MediaQuery.of(context).size.width - 44) / 2,
           child: VitalsCard(
-            title: "Heart Rate",
-            value: "${hr.toInt()} BPM",
+            title: AppStrings.heartRate,
+            value: "${hr.toInt()} ${AppStrings.unitBpm}",
             color: AppColors.heartRateRed,
             icon: Icons.favorite,
           ),
@@ -59,8 +59,8 @@ class VitalsRowWidget extends StatelessWidget {
         SizedBox(
           width: (MediaQuery.of(context).size.width - 44) / 2,
           child: VitalsCard(
-            title: "SpO2",
-            value: "$spo2%",
+            title: AppStrings.spo2,
+            value: "$spo2${AppStrings.unitPercentage}",
             color: AppColors.spo2Cyan,
             icon: Icons.water_drop,
           ),
@@ -69,3 +69,4 @@ class VitalsRowWidget extends StatelessWidget {
     );
   }
 }
+

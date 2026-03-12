@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/theme/app_theme.dart';
 
 class SavingOverlayWidget extends StatelessWidget {
   const SavingOverlayWidget({super.key});
@@ -17,8 +19,8 @@ class SavingOverlayWidget extends StatelessWidget {
                 const CircularProgressIndicator.adaptive(),
                 const SizedBox(height: 16),
                 Text(
-                  'Saving measurement…',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  AppStrings.savingMeasurement,
+                  style: AppTheme.textTheme.bodyMedium,
                 ),
               ],
             ),

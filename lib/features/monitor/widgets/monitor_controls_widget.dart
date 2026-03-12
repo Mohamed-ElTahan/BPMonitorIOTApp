@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/theme/app_colors.dart';
 
 class MonitorControlsWidget extends StatelessWidget {
   final bool isConnected;
@@ -20,8 +22,6 @@ class MonitorControlsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     // Disable all controls while not connected or while saving.
     final controlsEnabled = isConnected && !isSaving;
 
@@ -35,12 +35,12 @@ class MonitorControlsWidget extends StatelessWidget {
                 ? (isMeasuring ? onStop : onStart)
                 : null,
             icon: Icon(isMeasuring ? Icons.stop : Icons.play_arrow),
-            label: Text(isMeasuring ? 'Stop' : 'Start'),
+            label: Text(isMeasuring ? AppStrings.stop : AppStrings.start),
             style: ElevatedButton.styleFrom(
               backgroundColor: isMeasuring
-                  ? theme.colorScheme.error
-                  : theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
+                  ? AppColors.heartRateRed
+                  : AppColors.ecgGreen,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
@@ -62,10 +62,10 @@ class MonitorControlsWidget extends StatelessWidget {
                     ),
                   )
                 : const Icon(Icons.save),
-            label: Text(isSaving ? 'Saving…' : 'Save'),
+            label: Text(isSaving ? AppStrings.saving : AppStrings.save),
             style: ElevatedButton.styleFrom(
-              backgroundColor: theme.colorScheme.secondary,
-              foregroundColor: theme.colorScheme.onSecondary,
+              backgroundColor: AppColors.spo2Cyan,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
@@ -74,3 +74,4 @@ class MonitorControlsWidget extends StatelessWidget {
     );
   }
 }
+
