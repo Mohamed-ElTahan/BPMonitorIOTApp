@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'app_colors.dart';
 
 class AppTheme {
+  static TextTheme get textTheme => lightTheme.textTheme;
+
   static ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
@@ -14,6 +16,8 @@ class AppTheme {
         surface: AppColors.lightCardBackground,
         error: AppColors.heartRateRed,
       ),
+
+      // appBar theme
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
         foregroundColor: AppColors.lightTextPrimary,
@@ -38,9 +42,16 @@ class AppTheme {
           ),
         ),
       ),
+
+      // Text theme
       textTheme: const TextTheme(
         headlineMedium: TextStyle(
           fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightTextPrimary,
+        ),
+        headlineSmall: TextStyle(
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           color: AppColors.lightTextPrimary,
         ),
@@ -56,11 +67,17 @@ class AppTheme {
         ),
         bodyMedium: TextStyle(fontSize: 16, color: AppColors.lightTextPrimary),
         bodySmall: TextStyle(fontSize: 14, color: AppColors.lightTextSecondary),
+        labelMedium: TextStyle(
+          fontSize: 14,
+          color: AppColors.lightTextSecondary,
+        ),
         labelSmall: TextStyle(
           fontSize: 12,
           color: AppColors.lightTextSecondary,
         ),
       ),
+
+      // card theme
       cardTheme: CardThemeData(
         color: AppColors.lightCardBackground,
         elevation: 0,
@@ -70,6 +87,8 @@ class AppTheme {
         ),
         margin: const EdgeInsets.only(bottom: 12),
       ),
+
+      // elevated button theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
@@ -79,6 +98,8 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         ),
       ),
+
+      // bottom navigation bar theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         selectedItemColor: AppColors.ecgGreen,
@@ -91,12 +112,16 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 10,
       ),
+
+      // floating action button theme
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.ecgGreen,
         foregroundColor: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
+
+      // dialog theme
       dialogTheme: DialogThemeData(
         backgroundColor: Colors.white,
         elevation: 8,
