@@ -1,3 +1,5 @@
+import '../../../core/constants/firebase_constants.dart';
+
 class OximeterModel {
   final int spo2;
   final int heartRate;
@@ -7,10 +9,13 @@ class OximeterModel {
   /// Expected payload: {"spo2": 95, "hr": 60}
   factory OximeterModel.fromJson(Map<String, dynamic> json) {
     return OximeterModel(
-      spo2: (json['spo2'] as num?)?.toInt() ?? 0,
-      heartRate: (json['hr'] as num?)?.toInt() ?? 0,
+      spo2: (json[FirebaseConstants.keySpo2] as num?)?.toInt() ?? 0,
+      heartRate: (json[FirebaseConstants.keyHr] as num?)?.toInt() ?? 0,
     );
   }
 
-  Map<String, dynamic> toJson() => {'spo2': spo2, 'hr': heartRate};
+  Map<String, dynamic> toJson() => {
+        FirebaseConstants.keySpo2: spo2,
+        FirebaseConstants.keyHr: heartRate,
+      };
 }
