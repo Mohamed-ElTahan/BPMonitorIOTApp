@@ -44,11 +44,7 @@ class MonitorCubit extends Cubit<MonitorState> {
       if (!connected && state is MonitorConnected) {
         emit(const MonitorDisconnected());
       } else if (connected && state is! MonitorConnected) {
-        emit(
-          MonitorConnected(
-            currentVitals: _emptyVitals(),
-          ),
-        );
+        emit(MonitorConnected(currentVitals: _emptyVitals()));
       }
     });
 
@@ -156,7 +152,7 @@ class MonitorCubit extends Cubit<MonitorState> {
   /// Emits [MonitorSaving] while in progress, then [MonitorSaveResult].
   Future<void> saveVitals({
     required String name,
-    required String sex,
+    required String gender,
     required int age,
   }) async {
     if (state is! MonitorConnected) return;
@@ -164,24 +160,19 @@ class MonitorCubit extends Cubit<MonitorState> {
     final vitals = current.currentVitals;
 
     emit(
-      MonitorSaving(
-        currentVitals: vitals,
-        isMeasuring: current.isMeasuring,
-      ),
+      MonitorSaving(currentVitals: vitals, isMeasuring: current.isMeasuring),
     );
 
     try {
       await firestoreService.saveHistory(
         PatientModel(
           name: name,
-          sex: sex,
+          gender: gender,
           age: age,
-          bloodPressure:
-              '${vitals.bloodPressure.systolic}/${vitals.bloodPressure.diastolic}',
-          livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
-          heartRate: vitals.oximeter.heartRate,
-          spo2: vitals.oximeter.spo2,
           timestamp: DateTime.now(),
+          bloodPressure: vitals.bloodPressure,
+          oximeter: vitals.oximeter,
+          livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
           ecg: const [],
         ),
       );
