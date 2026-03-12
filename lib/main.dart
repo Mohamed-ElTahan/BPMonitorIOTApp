@@ -1,6 +1,7 @@
 import 'package:bp_monitor_iot/features/main_scaffold/main_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
 import 'core/data_source/mqtt/mqtt_data_source.dart';
 import 'features/monitor/repository/monitor_repository.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          title: 'BP Monitor IOT',
+          title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           home: BlocBuilder<WifiCubit, WifiStatus>(
