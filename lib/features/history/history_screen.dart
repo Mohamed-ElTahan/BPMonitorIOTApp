@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bp_monitor_iot/core/constants/app_strings.dart';
 import 'package:bp_monitor_iot/core/theme/app_colors.dart';
+import 'package:bp_monitor_iot/core/theme/app_theme.dart';
 import 'package:bp_monitor_iot/features/history/repository/history_repository.dart';
 import 'cubit/history_cubit.dart';
 import 'cubit/history_state.dart';
 import 'widgets/history_card.dart';
+import 'widgets/no_history_widget.dart';
+import 'package:bp_monitor_iot/core/widgets/snackbars/app_snackbars.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -24,92 +28,79 @@ class _HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () => context.read<HistoryCubit>().loadHistory(),
+    return BlocListener<HistoryCubit, HistoryState>(
+      listener: (context, state) {
+        if (state is HistoryDeleteSuccess) {
+          AppSnackbars.showSuccess(context, AppStrings.historyDeleteSuccess);
+        } else if (state is HistoryDeleteFailure) {
+          AppSnackbars.showError(
+              context, '${AppStrings.historyDeleteFailure}${state.message}');
+        }
+      },
+      child: RefreshIndicator(
+        onRefresh: () =>
+            context.read<HistoryCubit>().loadHistory(isRefresh: true),
         color: AppColors.ecgGreen,
         child: BlocBuilder<HistoryCubit, HistoryState>(
+          buildWhen: (prev, curr) =>
+              curr is HistoryLoading ||
+              curr is HistoryLoaded ||
+              curr is HistoryError,
           builder: (context, state) {
-            if (state is HistoryLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.ecgGreen),
-              );
-            }
+            switch (state) {
+              case HistoryLoading():
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.ecgGreen),
+                );
 
-            if (state is HistoryError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Failed to load history',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      state.message,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () =>
-                          context.read<HistoryCubit>().loadHistory(),
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            if (state is HistoryLoaded) {
-              if (state.history.isEmpty) {
+              case HistoryError():
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.history_outlined,
-                        color: Colors.grey.withValues(alpha: 0.5),
-                        size: 80,
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 60,
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No history records found',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        AppStrings.historyLoadFailure,
+                        style: AppTheme.textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Start a measurement to see it here',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        state.message,
+                        textAlign: TextAlign.center,
+                        style: AppTheme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: () =>
+                            context.read<HistoryCubit>().loadHistory(),
+                        child: const Text(AppStrings.retry),
                       ),
                     ],
                   ),
                 );
-              }
 
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.history.length,
-                itemBuilder: (context, index) {
-                  return HistoryCard(data: state.history[index]);
-                },
-              );
+              case HistoryLoaded():
+                if (state.history.isEmpty) {
+                  return const NoHistoryWidget();
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.history.length,
+                  itemBuilder: (context, index) {
+                    return HistoryCard(data: state.history[index]);
+                  },
+                );
+
+              case HistoryDeleteSuccess():
+              case HistoryDeleteFailure():
+                return const SizedBox.shrink();
             }
-
-            return const SizedBox.shrink();
           },
         ),
       ),
