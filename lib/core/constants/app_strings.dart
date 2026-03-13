@@ -7,6 +7,8 @@ class AppStrings {
   static const String save = 'Save';
   static const String retry = 'Retry';
   static const String delete = 'Delete';
+  static const String analysis = 'Analysis';
+  static const String recordDetails = 'Record Details';
 
   // Units
   static const String unitMmHg = 'mmHg';
