@@ -8,7 +8,7 @@ import 'cubit/history_cubit.dart';
 import 'cubit/history_state.dart';
 import 'widgets/history_card.dart';
 import 'widgets/no_history_widget.dart';
-import 'package:bp_monitor_iot/core/widgets/snackbars/app_snackbars.dart';
+import 'package:bp_monitor_iot/core/utils/snackbars/app_snackbars.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -34,7 +34,9 @@ class _HistoryScreen extends StatelessWidget {
           AppSnackbars.showSuccess(context, AppStrings.historyDeleteSuccess);
         } else if (state is HistoryDeleteFailure) {
           AppSnackbars.showError(
-              context, '${AppStrings.historyDeleteFailure}${state.message}');
+            context,
+            '${AppStrings.historyDeleteFailure}${state.message}',
+          );
         }
       },
       child: RefreshIndicator(
