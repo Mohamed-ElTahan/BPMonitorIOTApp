@@ -9,13 +9,21 @@ import 'features/history/repository/history_repository.dart';
 import 'core/cubits/mqtt_connection_cubit.dart';
 import 'core/cubits/wifi_cubit.dart';
 import 'core/data_source/firebase/firestore_data_source.dart';
-import 'core/widgets/no_connection_screen.dart';
+import 'core/utils/no_connection_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Lock orientation to portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const MyApp());
 }
 
