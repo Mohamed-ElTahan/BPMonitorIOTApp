@@ -48,9 +48,25 @@ class AppStrings {
 
   // About Screen
   static const String aboutDescription =
-      'A comprehensive IoT application for monitoring blood pressure, heart rate, oxygen saturation, and continuous ECG waveforms. Connect seamlessly to a smart monitor to track your vitals in real-time and review historical data analysis.';
+      'CSBPM is a Communication Smart Blood Pressure Monitor using IoT technology. This comprehensive platform allows for continuous real-time monitoring of essential vitals, including blood pressure, heart rate, oxygen saturation (SpO2), and ECG waveforms. It seamlessly connects to smart health devices to provide accurate readings and in-depth historical data analysis, empowering patients and healthcare providers to make informed health decisions.';
   static String aboutCopyright(int year) =>
       '© $year BP Monitor IoT. All rights reserved.';
+
+  // Team & Supervisor
+  static const String teamInfo = 'Team Info';
+  static const String teamDescription =
+      'Our dedicated development team is committed to delivering high-quality healthcare solutions through innovative IoT technology.';
+  static const String supervisor = 'Supervised By';
+  static const String supervisorDescription =
+      'Under professional guidance to ensure the highest standards of medical data accuracy and system reliability.';
+  static const String supervisorName1 = 'Prof. Gamal El-Sheikh';
+  static const String supervisorTitle1 = 'Project Supervisor';
+  static const String supervisorName2 = 'Asst. Lecture Asmaa Radi';
+  static const String supervisorTitle2 = 'Assistant Supervisor';
+  static const String teamMembersLabel = 'Team Members:';
+  static const String placeholderTeamMember1 = 'Lead Developer';
+  static const String placeholderTeamMember2 = 'IoT Specialist';
+  static const String placeholderTeamMember3 = 'UI/UX Designer';
 
   // MQTT Status
   static const String brokerOnline = 'Broker: Online';
