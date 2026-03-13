@@ -33,7 +33,7 @@ class _MainScaffold extends StatelessWidget {
   static final List<String> _titles = [
     'Live Monitor',
     'Measurement History',
-    'Application Info',
+    'Project Info',
   ];
 
   @override
