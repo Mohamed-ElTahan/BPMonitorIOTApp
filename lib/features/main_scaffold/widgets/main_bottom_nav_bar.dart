@@ -22,11 +22,6 @@ class MainBottomNavBar extends StatelessWidget {
           label: 'Monitor',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.analytics_outlined),
-          activeIcon: Icon(Icons.analytics),
-          label: 'Analysis',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.history_outlined),
           activeIcon: Icon(Icons.history),
           label: 'History',

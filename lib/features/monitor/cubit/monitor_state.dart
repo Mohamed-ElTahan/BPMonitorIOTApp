@@ -21,25 +21,46 @@ class MonitorConnecting extends MonitorState {}
 
 class MonitorConnected extends MonitorState {
   final PatientMeasurementModel currentVitals;
-  final bool isMeasuring;
+  final bool isBPMeasuring;
+  final bool isOxiMeasuring;
+  final bool isECGMeasuring;
 
   const MonitorConnected({
     required this.currentVitals,
-    this.isMeasuring = false,
-  });
+    bool isMeasuring = false,
+    bool isBPMeasuring = false,
+    bool isOxiMeasuring = false,
+    bool isECGMeasuring = false,
+  }) : isBPMeasuring = isMeasuring || isBPMeasuring,
+       isOxiMeasuring = isMeasuring || isOxiMeasuring,
+       isECGMeasuring = isMeasuring || isECGMeasuring;
+
+  /// Computed property that returns true if ANY measurement is active.
+  /// Maintained for backward compatibility with UI components.
+  bool get isMeasuring => isBPMeasuring || isOxiMeasuring || isECGMeasuring;
 
   MonitorConnected copyWithState({
     PatientMeasurementModel? currentVitals,
-    bool? isMeasuring,
+    bool? isBPMeasuring,
+    bool? isOxiMeasuring,
+    bool? isECGMeasuring,
+    bool? isMeasuring, // Added for compatibility with existing code
   }) {
     return MonitorConnected(
       currentVitals: currentVitals ?? this.currentVitals,
-      isMeasuring: isMeasuring ?? this.isMeasuring,
+      isBPMeasuring: isMeasuring ?? isBPMeasuring ?? this.isBPMeasuring,
+      isOxiMeasuring: isMeasuring ?? isOxiMeasuring ?? this.isOxiMeasuring,
+      isECGMeasuring: isMeasuring ?? isECGMeasuring ?? this.isECGMeasuring,
     );
   }
 
   @override
-  List<Object?> get props => [currentVitals, isMeasuring];
+  List<Object?> get props => [
+    currentVitals,
+    isBPMeasuring,
+    isOxiMeasuring,
+    isECGMeasuring,
+  ];
 }
 
 /// Emitted while a Firestore save is in progress.
@@ -64,11 +85,7 @@ class MonitorSaveResult extends MonitorConnected {
   });
 
   @override
-  List<Object?> get props => [
-    ...super.props,
-    success,
-    error,
-  ];
+  List<Object?> get props => [...super.props, success, error];
 }
 
 class MonitorDisconnected extends MonitorState {

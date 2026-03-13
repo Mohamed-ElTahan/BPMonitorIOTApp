@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/navigation_cubit.dart';
 import '../monitor/monitor_screen.dart';
 import '../history/history_screen.dart';
-import '../analysis/analysis_screen.dart';
 import '../about/about_screen.dart';
 import 'widgets/main_app_bar.dart';
 import 'widgets/main_bottom_nav_bar.dart';
@@ -27,14 +26,12 @@ class _MainScaffold extends StatelessWidget {
 
   static final List<Widget> _screens = [
     const MonitorScreen(),
-    const AnalysisScreen(),
     const HistoryScreen(),
     const AboutScreen(),
   ];
 
   static final List<String> _titles = [
     'Live Monitor',
-    'Health Analysis',
     'Measurement History',
     'Application Info',
   ];

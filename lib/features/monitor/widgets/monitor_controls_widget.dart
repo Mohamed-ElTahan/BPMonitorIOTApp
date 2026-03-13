@@ -74,4 +74,3 @@ class MonitorControlsWidget extends StatelessWidget {
     );
   }
 }
-
