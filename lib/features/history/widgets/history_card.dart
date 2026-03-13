@@ -6,8 +6,8 @@ import 'package:bp_monitor_iot/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/patient_model.dart';
 import '../cubit/history_cubit.dart';
-import '../../../core/widgets/dialogs/delete_confirmation_dialog.dart';
-import '../../../core/widgets/dialogs/patient_details_dialog.dart';
+import '../../../core/utils/dialogs/delete_confirmation_dialog.dart';
+import '../../../core/utils/dialogs/patient_details_dialog.dart';
 
 class HistoryCard extends StatelessWidget {
   final PatientModel data;
