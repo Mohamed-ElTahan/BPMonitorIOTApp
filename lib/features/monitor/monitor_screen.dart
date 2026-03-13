@@ -5,8 +5,8 @@ import 'cubit/monitor_state.dart';
 import 'repository/monitor_repository.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/data_source/firebase/firestore_data_source.dart';
-import '../../core/widgets/snackbars/app_snackbars.dart';
-import '../../core/widgets/dialogs/patient_info_dialog.dart';
+import '../../core/utils/snackbars/app_snackbars.dart';
+import '../../core/utils/dialogs/patient_info_dialog.dart';
 import 'widgets/ecg_chart_card_widget.dart';
 import 'widgets/monitor_controls_widget.dart';
 import 'widgets/monitor_screen_selectors.dart';
@@ -38,7 +38,10 @@ class _MonitorScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is MonitorSaveResult) {
           if (state.success) {
-            AppSnackbars.showSuccess(context, AppStrings.measurementSavedSuccess);
+            AppSnackbars.showSuccess(
+              context,
+              AppStrings.measurementSavedSuccess,
+            );
           } else {
             AppSnackbars.showError(
               context,
