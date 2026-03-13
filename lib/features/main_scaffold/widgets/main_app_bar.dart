@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/cubits/mqtt_connection_cubit.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/widgets/wifi_status_widget.dart';
-import '../../../core/widgets/connection_status_badge.dart';
+import '../../../core/utils/wifi_status_widget.dart';
+import '../../../core/utils/connection_status_badge.dart';
 import 'package:bp_monitor_iot/features/main_scaffold/cubit/navigation_cubit.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -14,49 +14,64 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title),
-          Text(AppStrings.appName,
-              style: Theme.of(context).textTheme.labelSmall),
-        ],
-      ),
+      centerTitle: title == 'Project Info' ? true : false,
+      title: title == 'Project Info'
+          ? // Only show the centered title on the Project Info (About) screen
+            Text(title)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title),
+                Text(
+                  AppStrings.appName,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
+            ),
       actions: [
-        // WiFi status — always visible on all screens
-        const Padding(
-          padding: EdgeInsets.only(right: 6),
-          child: WifiStatusWidget(),
-        ),
-        // MQTT broker status — only on Monitor screen (index 0)
         BlocBuilder<NavigationCubit, int>(
           builder: (context, index) {
-            if (index != 0) return const SizedBox.shrink();
+            // Hide all connection status indicators on the Project Info / About screen (index 2)
+            if (index == 2) return const SizedBox.shrink();
 
-            return BlocBuilder<MqttConnectionCubit, MqttConnectionStatus>(
-              builder: (context, status) {
-                final connectionStatus = switch (status) {
-                  MqttConnectionStatus.connected => ConnectionStatus.connected,
-                  MqttConnectionStatus.connecting =>
-                    ConnectionStatus.connecting,
-                  _ => ConnectionStatus.disconnected,
-                };
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // WiFi status — visible on other screens
+                const Padding(
+                  padding: EdgeInsets.only(right: 6),
+                  child: WifiStatusWidget(),
+                ),
+                // MQTT broker status — only on Monitor screen (index 0)
+                if (index == 0)
+                  BlocBuilder<MqttConnectionCubit, MqttConnectionStatus>(
+                    builder: (context, status) {
+                      final connectionStatus = switch (status) {
+                        MqttConnectionStatus.connected =>
+                          ConnectionStatus.connected,
+                        MqttConnectionStatus.connecting =>
+                          ConnectionStatus.connecting,
+                        _ => ConnectionStatus.disconnected,
+                      };
 
-                final statusText = switch (status) {
-                  MqttConnectionStatus.connected => AppStrings.brokerOnline,
-                  MqttConnectionStatus.connecting =>
-                    AppStrings.brokerConnecting,
-                  _ => AppStrings.brokerOffline,
-                };
+                      final statusText = switch (status) {
+                        MqttConnectionStatus.connected =>
+                          AppStrings.brokerOnline,
+                        MqttConnectionStatus.connecting =>
+                          AppStrings.brokerConnecting,
+                        _ => AppStrings.brokerOffline,
+                      };
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: ConnectionStatusBadge(
-                    status: connectionStatus,
-                    label: statusText,
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: ConnectionStatusBadge(
+                          status: connectionStatus,
+                          label: statusText,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+              ],
             );
           },
         ),
