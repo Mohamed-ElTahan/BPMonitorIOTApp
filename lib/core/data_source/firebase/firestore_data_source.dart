@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'seeder.dart';
 import 'package:bp_monitor_iot/features/history/model/patient_model.dart';
 import '../../constants/firebase_constants.dart';
 
@@ -37,5 +38,49 @@ class FirestoreDataSource {
     } catch (e) {
       throw Exception('Failed to delete patient record: $e');
     }
+  }
+
+  /// get about profile data from firestore for each member
+  Future<Map<String, dynamic>> getAboutProfile(String docName) async {
+    try {
+      final docSnapshot = await _firestore
+          .collection('about')
+          .doc(docName)
+          .get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.data() ?? _getDefaultProfile(docName);
+      }
+      return _getDefaultProfile(docName);
+    } catch (e) {
+      return _getDefaultProfile(docName);
+    }
+  }
+
+  Map<String, dynamic> _getDefaultProfile(String docName) {
+    return {
+      'name': docName,
+      'role': 'Developer',
+      'bio': 'Passionate about building great software.',
+      'githubUrl': '',
+      'email': '',
+      'linkedInUrl': '',
+      'whatsappNumber': '',
+    };
+  }
+
+  // One-time seed for all profiles
+  Future<void> seedAllProfiles() async {
+    final profiles = DataSeeder.teamProfiles;
+    final batch = _firestore.batch();
+
+    for (Map<String, dynamic> profile in profiles) {
+      final docRef = _firestore
+          .collection('about')
+          .doc(profile['name'] as String);
+      batch.set(docRef, profile);
+    }
+
+    await batch.commit();
   }
 }
