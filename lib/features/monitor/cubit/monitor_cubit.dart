@@ -13,8 +13,9 @@ class MonitorCubit extends Cubit<MonitorState> {
   final MonitorRepository repository;
   final FirestoreDataSource firestoreService;
 
-  // Rolling buffer for ECG points (max 150 points for graph).
+  // Rolling buffers for ECG and BP points (max 150 points for graph).
   final List<double> _rollingEcgPoints = [];
+  final List<double> _rollingBpPoints = [];
   static const int _maxDataPoints = 150;
 
   StreamSubscription? _connectionSub;
@@ -107,20 +108,33 @@ class MonitorCubit extends Cubit<MonitorState> {
     final current = state as MonitorConnected;
 
     // Append new ECG points.
-    _rollingEcgPoints.addAll(vitals.ecg);
+    if (vitals.ecg.isNotEmpty) {
+      _rollingEcgPoints.addAll(vitals.ecg);
+      if (_rollingEcgPoints.length > _maxDataPoints) {
+        _rollingEcgPoints.removeRange(
+          0,
+          _rollingEcgPoints.length - _maxDataPoints,
+        );
+      }
+    }
 
-    // O(n) trim — drop oldest points when the buffer exceeds the cap.
-    if (_rollingEcgPoints.length > _maxDataPoints) {
-      final excess = _rollingEcgPoints.length - _maxDataPoints;
-      _rollingEcgPoints.removeRange(0, excess);
+    // Append new BP points.
+    if (vitals.livePressure.isNotEmpty) {
+      _rollingBpPoints.addAll(vitals.livePressure);
+      if (_rollingBpPoints.length > _maxDataPoints) {
+        _rollingBpPoints.removeRange(
+          0,
+          _rollingBpPoints.length - _maxDataPoints,
+        );
+      }
     }
 
     emit(
-      MonitorConnected(
+      current.copyWithState(
         currentVitals: vitals.copyWith(
           ecg: List<double>.from(_rollingEcgPoints),
+          livePressure: List<double>.from(_rollingBpPoints),
         ),
-        isMeasuring: current.isMeasuring,
       ),
     );
   }
@@ -141,6 +155,12 @@ class MonitorCubit extends Cubit<MonitorState> {
     final current = state as MonitorConnected;
     repository.sendCommand('stop');
     emit(current.copyWithState(isMeasuring: false));
+  }
+
+  void changeChart(int index) {
+    if (state is! MonitorConnected) return;
+    final current = state as MonitorConnected;
+    emit(current.copyWithState(currentChartIndex: index));
   }
 
   void disconnect() {

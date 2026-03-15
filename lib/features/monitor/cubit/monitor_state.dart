@@ -21,12 +21,14 @@ class MonitorConnecting extends MonitorState {}
 
 class MonitorConnected extends MonitorState {
   final PatientMeasurementModel currentVitals;
+  final int currentChartIndex;
   final bool isBPMeasuring;
   final bool isOxiMeasuring;
   final bool isECGMeasuring;
 
   const MonitorConnected({
     required this.currentVitals,
+    this.currentChartIndex = 0,
     bool isMeasuring = false,
     bool isBPMeasuring = false,
     bool isOxiMeasuring = false,
@@ -41,6 +43,7 @@ class MonitorConnected extends MonitorState {
 
   MonitorConnected copyWithState({
     PatientMeasurementModel? currentVitals,
+    int? currentChartIndex,
     bool? isBPMeasuring,
     bool? isOxiMeasuring,
     bool? isECGMeasuring,
@@ -48,6 +51,7 @@ class MonitorConnected extends MonitorState {
   }) {
     return MonitorConnected(
       currentVitals: currentVitals ?? this.currentVitals,
+      currentChartIndex: currentChartIndex ?? this.currentChartIndex,
       isBPMeasuring: isMeasuring ?? isBPMeasuring ?? this.isBPMeasuring,
       isOxiMeasuring: isMeasuring ?? isOxiMeasuring ?? this.isOxiMeasuring,
       isECGMeasuring: isMeasuring ?? isECGMeasuring ?? this.isECGMeasuring,
@@ -57,6 +61,7 @@ class MonitorConnected extends MonitorState {
   @override
   List<Object?> get props => [
     currentVitals,
+    currentChartIndex,
     isBPMeasuring,
     isOxiMeasuring,
     isECGMeasuring,
