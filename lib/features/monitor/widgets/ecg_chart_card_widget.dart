@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import 'ecg_chart.dart';
 
@@ -21,14 +20,6 @@ class EcgChartCardWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text(
-              AppStrings.ecgWaveform,
-              style: AppTheme.textTheme.titleMedium?.copyWith(
-                color: AppColors.ecgGreen,
-              ),
-            ),
-
-            const SizedBox(height: 16),
             Expanded(
               child: Builder(
                 builder: (context) {
