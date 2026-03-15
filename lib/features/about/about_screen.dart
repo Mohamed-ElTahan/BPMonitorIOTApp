@@ -25,9 +25,9 @@ class AboutScreen extends StatelessWidget {
       child: Column(
         children: [
           _buildHero(context),
-          SizedBox(height: context.responsive(mobile: 30, tablet: 52)),
+          SizedBox(height: context.responsive(mobile: 20, tablet: 52)),
           _buildDescription(context),
-          SizedBox(height: context.responsive(mobile: 28, tablet: 42)),
+          SizedBox(height: context.responsive(mobile: 20, tablet: 42)),
           _buildNavigationSection(context, isTablet),
           SizedBox(height: context.responsive(mobile: 30, tablet: 60)),
           _buildFooter(context),
@@ -37,7 +37,7 @@ class AboutScreen extends StatelessWidget {
   }
 
   Widget _buildHero(BuildContext context) {
-    final iconSize = context.responsive(mobile: 70.0, tablet: 100.0);
+    final iconSize = context.responsive(mobile: 120.0, tablet: 150.0);
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
@@ -52,15 +52,18 @@ class AboutScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: AppColors.ecgGreen.withValues(alpha: 0.1),
+              color: AppColors.ecgGreen.withValues(alpha: 0.5),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.monitor_heart,
-              size: iconSize,
-              color: AppColors.ecgGreen,
+            child: ClipOval(
+              child: Image.asset(
+                'assets/icons/CSBPM_icon.jpeg',
+                width: iconSize,
+                height: iconSize,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(height: context.responsive(mobile: 12, tablet: 26)),
@@ -89,7 +92,7 @@ class AboutScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(1),
           ),
         ),
-        SizedBox(height: context.responsive(mobile: 12, tablet: 16)),
+        SizedBox(height: context.responsive(mobile: 10, tablet: 16)),
         Text(
           AppStrings.aboutDescription,
           textAlign: TextAlign.center,

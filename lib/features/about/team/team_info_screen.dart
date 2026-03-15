@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_strings.dart';
+//import '../../../core/data_source/firebase/firestore_data_source.dart';
 import 'model/list_team_member.dart';
 import 'widgets/member_card.dart';
 
@@ -10,10 +11,23 @@ class TeamInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text(AppStrings.teamInfo), centerTitle: true),
+
+      // TODO: upload data to firebase
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     await FirestoreDataSource().seedAllProfiles();
+      //     if (context.mounted) {
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         const SnackBar(content: Text('Data seeded successfully!')),
+      //       );
+      //     }
+      //   },
+      //   child: const Icon(Icons.cloud_upload),
+      // ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final double itemWidth = (constraints.maxWidth - 20 - 10) / 2;
-          final double itemHeight = (constraints.maxHeight - 20 - 10) / 2.5;
+          final double itemHeight = (constraints.maxHeight - 20 - 10) / 3;
           final double childAspectRatio = itemWidth / itemHeight;
 
           return GridView.builder(
