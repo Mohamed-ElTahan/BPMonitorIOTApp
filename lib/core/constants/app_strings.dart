@@ -17,6 +17,7 @@ class AppStrings {
 
   // Vitals
   static const String livePressure = 'Live Pressure';
+  static const String liveBloodPressure = 'Live Blood Pressure';
   static const String bloodPressure = 'Blood Pressure';
   static const String heartRate = 'Heart Rate';
   static const String spo2 = 'SpO2';
@@ -47,6 +48,12 @@ class AppStrings {
   static const String deleteRecord = 'Delete record';
 
   // About Screen
+  static const String aboutMe = 'About Me';
+  static const String profileImage = 'Profile Image';
+  static const String github = 'GitHub';
+  static const String email = 'Email';
+  static const String linkedin = 'LinkedIn';
+  static const String whatsapp = 'WhatsApp';
   static const String aboutDescription =
       'CSBPM is a Communication Smart Blood Pressure Monitor using IoT technology. This comprehensive platform allows for continuous real-time monitoring of essential vitals, including blood pressure, heart rate, oxygen saturation (SpO2), and ECG waveforms. It seamlessly connects to smart health devices to provide accurate readings and in-depth historical data analysis, empowering patients and healthcare providers to make informed health decisions.';
   static String aboutCopyright(int year) =>

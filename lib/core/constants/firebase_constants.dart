@@ -1,6 +1,7 @@
 class FirebaseConstants {
   // Collections
   static const String collectionHistory = 'history';
+  static const String collectionAboutMe = 'about_me';
 
   // Keys
   static const String keyName = 'name';
