@@ -11,7 +11,7 @@ class DataSeeder {
       'whatsappNumber': '+201206133773',
     },
     {
-      'name': 'Team Member 2',
+      'name': 'Al-Hassan Hisham',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Node.js and Firebase expert focused on building scalable cloud infrastructures and real-time database solutions.',
@@ -21,7 +21,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456780',
     },
     {
-      'name': 'Team Member 3',
+      'name': 'Abdullah Ahmed Saeid',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Creative designer dedicated to crafting beautiful, intuitive user experiences and premium visual identities.',
@@ -31,7 +31,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456781',
     },
     {
-      'name': 'Team Member 4',
+      'name': 'Mohamed Ahmed Abdel Tawab',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Meticulous QA engineer ensuring application stability through comprehensive automated and manual testing strategies.',
@@ -41,7 +41,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456782',
     },
     {
-      'name': 'Team Member 5',
+      'name': 'Mostafa Sayed Ragaei',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'System architect with a focus on high-performance APIs and data security.',
@@ -51,7 +51,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456783',
     },
     {
-      'name': 'Team Member 6',
+      'name': 'Mina Sabry Fahmy',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Visual storyteller creating engaging digital interfaces and brand experiences.',
@@ -61,7 +61,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456784',
     },
     {
-      'name': 'Team Member 7',
+      'name': 'Mohamed Ahmed Kamal',
       'role': 'Electronics and Communication Enginnerring',
       'bio': 'Passionate about software quality and accessibility standards.',
       'githubUrl': 'https://github.com/member7',
@@ -70,7 +70,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456785',
     },
     {
-      'name': 'Team Member 8',
+      'name': 'Abrar Khaled',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Cloud computing enthusiast specializing in serverless architectures.',
@@ -80,7 +80,7 @@ class DataSeeder {
       'whatsappNumber': '+20123456786',
     },
     {
-      'name': 'Team Member 9',
+      'name': 'Basmala Mohamed Abdo',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
           'Human-centered designer focusing on accessibility and inclusive design.',
