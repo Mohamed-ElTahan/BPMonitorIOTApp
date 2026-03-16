@@ -12,19 +12,40 @@ class PatientMeasurementModel {
     required this.oximeter,
     required this.livePressure,
     required this.ecg,
+    this.creatinine,
+    this.bun,
+    this.alt,
+    this.ast,
+    this.glucose,
   });
+
+  final double? creatinine;
+  final double? bun;
+  final double? alt;
+  final double? ast;
+  final double? glucose;
 
   PatientMeasurementModel copyWith({
     OximeterModel? oximeter,
     BPModel? bloodPressure,
     List<double>? livePressure,
     List<double>? ecg,
+    double? creatinine,
+    double? bun,
+    double? alt,
+    double? ast,
+    double? glucose,
   }) {
     return PatientMeasurementModel(
       oximeter: oximeter ?? this.oximeter,
       bloodPressure: bloodPressure ?? this.bloodPressure,
       livePressure: livePressure ?? this.livePressure,
       ecg: ecg ?? this.ecg,
+      creatinine: creatinine ?? this.creatinine,
+      bun: bun ?? this.bun,
+      alt: alt ?? this.alt,
+      ast: ast ?? this.ast,
+      glucose: glucose ?? this.glucose,
     );
   }
 
