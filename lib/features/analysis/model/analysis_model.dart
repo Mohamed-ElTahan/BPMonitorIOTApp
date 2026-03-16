@@ -24,10 +24,16 @@ class AnalysisResult {
   final VitalInterpretation bp;
   final VitalInterpretation hr;
   final VitalInterpretation spo2;
+  final VitalInterpretation? kidney;
+  final VitalInterpretation? liver;
+  final VitalInterpretation? glucose;
 
   const AnalysisResult({
     required this.bp,
     required this.hr,
     required this.spo2,
+    this.kidney,
+    this.liver,
+    this.glucose,
   });
 }
