@@ -14,6 +14,11 @@ class AnalysisCubit extends Cubit<AnalysisState> {
         patient.bloodPressure.diastolic,
         patient.oximeter.heartRate,
         patient.oximeter.spo2,
+        creatinine: patient.creatinine,
+        bun: patient.bun,
+        alt: patient.alt,
+        ast: patient.ast,
+        glucose: patient.glucose,
       );
       emit(AnalysisLoaded(result));
     } catch (e) {
