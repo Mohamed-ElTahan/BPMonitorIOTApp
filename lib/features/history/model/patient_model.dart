@@ -21,6 +21,11 @@ class PatientModel extends PatientMeasurementModel {
     required super.bloodPressure,
     required super.livePressure,
     required super.ecg,
+    super.creatinine,
+    super.bun,
+    super.alt,
+    super.ast,
+    super.glucose,
     required this.timestamp,
   });
 
@@ -29,12 +34,15 @@ class PatientModel extends PatientMeasurementModel {
     // Parse blood pressure for backward compatibility
     BPModel bp;
     if (json[FirebaseConstants.keyBloodPressure] is String) {
-      final parts = (json[FirebaseConstants.keyBloodPressure] as String).split('/');
+      final parts = (json[FirebaseConstants.keyBloodPressure] as String).split(
+        '/',
+      );
       bp = BPModel(
         systolic: parts.isNotEmpty ? double.tryParse(parts[0]) ?? 0.0 : 0.0,
         diastolic: parts.length > 1 ? double.tryParse(parts[1]) ?? 0.0 : 0.0,
       );
-    } else if (json[FirebaseConstants.keyBloodPressure] is Map<String, dynamic>) {
+    } else if (json[FirebaseConstants.keyBloodPressure]
+        is Map<String, dynamic>) {
       bp = BPModel.fromJson(json[FirebaseConstants.keyBloodPressure]);
     } else {
       bp = BPModel(systolic: 0.0, diastolic: 0.0);
@@ -67,10 +75,15 @@ class PatientModel extends PatientMeasurementModel {
       age: json[FirebaseConstants.keyAge] ?? 0,
       timestamp: json[FirebaseConstants.keyTimestamp] is Timestamp
           ? (json[FirebaseConstants.keyTimestamp] as Timestamp).toDate()
-          : DateTime.tryParse(json[FirebaseConstants.keyTimestamp].toString()) ?? DateTime.now(),
+          : DateTime.tryParse(
+                  json[FirebaseConstants.keyTimestamp].toString(),
+                ) ??
+                DateTime.now(),
       bloodPressure: bp,
       oximeter: oxi,
-      livePressure: List<double>.from(json[FirebaseConstants.keyLivePressure] ?? []),
+      livePressure: List<double>.from(
+        json[FirebaseConstants.keyLivePressure] ?? [],
+      ),
       ecg: ecgPoints,
     );
   }
