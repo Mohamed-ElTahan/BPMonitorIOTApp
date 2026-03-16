@@ -7,35 +7,35 @@ class ListTeamMember {
       imagePath: 'assets/team_image/mohamed.png',
     ),
     MemberModel(
-      name: 'Team Member 2',
+      name: 'Al-Hassan Hisham',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 3',
+      name: 'Mohamed Ahmed Abdel Tawab',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 4',
+      name: 'Abdullah Ahmed Saeid',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 5',
+      name: 'Mostafa Sayed Ragaei',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 6',
+      name: 'Mina Sabry Fahmy',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 7',
+      name: 'Mohamed Ahmed Kamal',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 8',
+      name: 'Basmala Mohamed Abdo',
       imagePath: 'assets/team_image/profile.png',
     ),
     MemberModel(
-      name: 'Team Member 9',
+      name: 'Abrar Khaled',
       imagePath: 'assets/team_image/profile.png',
     ),
   ];
