@@ -8,6 +8,7 @@ import '../model/patient_model.dart';
 import '../cubit/history_cubit.dart';
 import '../../../core/utils/dialogs/delete_confirmation_dialog.dart';
 import '../../../core/utils/dialogs/patient_details_dialog.dart';
+import '../../analysis/analysis_screen.dart';
 
 class HistoryCard extends StatelessWidget {
   final PatientModel data;
@@ -197,11 +198,10 @@ class HistoryCard extends StatelessWidget {
       builder: (context) => PatientDetailsDialog(
         patient: data,
         onAnalysis: () {
-          // TODO:Placeholder for analysis
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Analyzing data for ${data.name}...'),
-              backgroundColor: AppColors.ecgGreen,
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AnalysisScreen(patient: data),
             ),
           );
         },
