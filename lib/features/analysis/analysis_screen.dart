@@ -12,47 +12,51 @@ import '../../core/constants/app_strings.dart';
 
 class AnalysisScreen extends StatelessWidget {
   final PatientModel patient;
-
   const AnalysisScreen({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AnalysisCubit()..analyzePatient(patient),
-      child: Scaffold(
-        backgroundColor: AppColors.lightScaffoldBackground,
-        appBar: AppBar(
-          title: const Text(AppStrings.analysis),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          foregroundColor: AppColors.lightTextPrimary,
-        ),
-        body: BlocBuilder<AnalysisCubit, AnalysisState>(
-          builder: (context, state) {
-            return switch (state) {
-              AnalysisLoading() => const Center(
-                  child: CircularProgressIndicator(color: AppColors.ecgGreen),
-                ),
-              AnalysisError(message: final msg) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: Colors.red,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(msg),
-                    ],
-                  ),
-                ),
-              AnalysisLoaded(result: final result) => _buildBody(context, result),
-              _ => const SizedBox.shrink(),
-            };
-          },
-        ),
+      create: (context) => AnalysisCubit(),
+      child: _AnalysisScreen(patient: patient),
+    );
+  }
+}
+
+class _AnalysisScreen extends StatelessWidget {
+  final PatientModel patient;
+
+  const _AnalysisScreen({required this.patient});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.analysis),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.lightTextPrimary,
+      ),
+      body: BlocBuilder<AnalysisCubit, AnalysisState>(
+        builder: (context, state) {
+          return switch (state) {
+            AnalysisLoading() => const Center(
+              child: CircularProgressIndicator(color: AppColors.ecgGreen),
+            ),
+            AnalysisError(message: final msg) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(msg),
+                ],
+              ),
+            ),
+            AnalysisLoaded(result: final result) => _buildBody(context, result),
+            _ => const SizedBox.shrink(),
+          };
+        },
       ),
     );
   }
@@ -66,17 +70,7 @@ class AnalysisScreen extends StatelessWidget {
           AnalysisHeader(patient: patient),
           const SizedBox(height: 32),
 
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 20),
-            child: Text(
-              'HEALTH ANALYSIS',
-              style: AppTheme.textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.5,
-                color: AppColors.lightTextSecondary.withValues(alpha: 0.7),
-              ),
-            ),
-          ),
+          _buildSectionHeader('VITAL SIGNS'),
 
           AnalysisCard(
             title: AppStrings.bloodPressure,
@@ -104,6 +98,43 @@ class AnalysisScreen extends StatelessWidget {
             interpretation: result.spo2,
             icon: Icons.water_drop,
           ),
+          
+          if (result.glucose != null) ...[
+            const SizedBox(height: 32),
+            _buildSectionHeader('METABOLIC HEALTH'),
+            AnalysisCard(
+              title: 'Blood Glucose',
+              value: '${patient.glucose?.toInt() ?? 0}',
+              unit: 'mg/dL',
+              interpretation: result.glucose!,
+              icon: Icons.bloodtype,
+            ),
+          ],
+
+          if (result.kidney != null || result.liver != null) ...[
+            const SizedBox(height: 32),
+            _buildSectionHeader('ORGAN HEALTH'),
+            if (result.kidney != null) ...[
+              AnalysisCard(
+                title: 'Kidney Function',
+                value:
+                    '${patient.creatinine ?? 0}/${patient.bun ?? 0}',
+                unit: 'Cr/BUN',
+                interpretation: result.kidney!,
+                icon: Icons.spa,
+              ),
+              const SizedBox(height: 20),
+            ],
+            if (result.liver != null) ...[
+              AnalysisCard(
+                title: 'Liver Function',
+                value: '${patient.alt ?? 0}/${patient.ast ?? 0}',
+                unit: 'ALT/AST',
+                interpretation: result.liver!,
+                icon: Icons.medication,
+              ),
+            ],
+          ],
 
           const SizedBox(height: 40),
 
@@ -143,6 +174,19 @@ class AnalysisScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 20),
+      child: Text(
+        title,
+        style: AppTheme.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.5,
+          color: AppColors.lightTextSecondary.withValues(alpha: 0.7),
+        ),
       ),
     );
   }
