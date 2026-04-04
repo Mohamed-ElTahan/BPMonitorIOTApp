@@ -1,6 +1,15 @@
+# Fix R8 missing classes (Java reflection)
+-keep class java.lang.reflect.** { *; }
+-dontwarn java.lang.reflect.**
+
+# Fix Google / Guava reflection issues
+-keep class com.google.common.** { *; }
+-dontwarn com.google.common.**
+
 # Flutter wrapper
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
+-keep class com.google.** { *; }
 -dontwarn io.flutter.embedding.**
 
 # Firebase / Firestore
@@ -8,6 +17,12 @@
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.firebase.**
 -dontwarn com.google.android.gms.**
+
+# Keep annotations (important for Firebase + reflection)
+-keepattributes *Annotation*
+
+# Keep generic signatures
+-keepattributes Signature
 
 # Keep Firestore model classes (Kotlin data classes used with Firestore)
 -keepclassmembers class * {
