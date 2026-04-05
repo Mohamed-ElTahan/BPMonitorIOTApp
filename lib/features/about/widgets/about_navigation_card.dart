@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../../core/extensions/context_extension.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../core/extensions/context_extension.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 
-class AboutNavCard extends StatelessWidget {
+class AboutNavigationCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
-  const AboutNavCard({
+  const AboutNavigationCard({
     super.key,
     required this.title,
     required this.subtitle,
@@ -32,13 +32,14 @@ class AboutNavCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 24,
             offset: const Offset(0, 8),
           ),
         ],
         border: Border.all(
-          color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
+          color: color.withValues(alpha: 0.1),
+          width: 1,
         ),
       ),
       child: Material(
@@ -46,6 +47,8 @@ class AboutNavCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(24),
+          splashColor: color.withValues(alpha: 0.05),
+          highlightColor: color.withValues(alpha: 0.02),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: horizontalPadding,
@@ -57,7 +60,14 @@ class AboutNavCard extends StatelessWidget {
                   width: iconContainerSize,
                   height: iconContainerSize,
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
+                    gradient: LinearGradient(
+                      colors: [
+                        color.withValues(alpha: 0.15),
+                        color.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, color: color, size: iconSize),
@@ -70,25 +80,27 @@ class AboutNavCard extends StatelessWidget {
                       Text(
                         title,
                         style: AppTheme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: context.responsive(mobile: 16, tablet: 20),
+                          fontWeight: FontWeight.w800,
+                          fontSize: context.responsive(mobile: 17, tablet: 22),
                         ),
                       ),
-                      SizedBox(height: context.responsive(mobile: 6, tablet: 10)),
+                      const SizedBox(height: 4),
                       Text(
                         subtitle,
                         style: AppTheme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.lightTextSecondary,
-                          fontSize: context.responsive(mobile: 12, tablet: 15),
+                          color: AppColors.lightTextSecondary.withValues(
+                            alpha: 0.7,
+                          ),
+                          fontSize: context.responsive(mobile: 13, tablet: 16),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Icon(
-                  Icons.arrow_forward_ios,
-                  size: context.responsive(mobile: 14, tablet: 18),
-                  color: AppColors.lightTextSecondary.withValues(alpha: 0.4),
+                  Icons.arrow_forward_ios_rounded,
+                  size: context.responsive(mobile: 16, tablet: 20),
+                  color: color.withValues(alpha: 0.3),
                 ),
               ],
             ),

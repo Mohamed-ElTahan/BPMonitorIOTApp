@@ -57,7 +57,9 @@ class AppStrings {
   static const String aboutDescription =
       'CSBPM is a Communication Smart Blood Pressure Monitor using IoT technology. This comprehensive platform allows for continuous real-time monitoring of essential vitals, including blood pressure, heart rate, oxygen saturation (SpO2), and ECG waveforms. It seamlessly connects to smart health devices to provide accurate readings and in-depth historical data analysis, empowering patients and healthcare providers to make informed health decisions.';
   static String aboutCopyright(int year) =>
-      '© $year BP Monitor IoT. All rights reserved.';
+      '© $year CSBPM. All rights reserved.';
+  static const String teamInfoSubtitle = 'Learn more about the team';
+  static const String supervisorSubtitle = 'Academic and professional guidance';
 
   // Team & Supervisor
   static const String teamInfo = 'Team Info';

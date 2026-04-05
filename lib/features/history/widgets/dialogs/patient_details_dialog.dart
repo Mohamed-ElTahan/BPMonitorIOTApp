@@ -5,15 +5,12 @@ import 'package:bp_monitor_iot/core/theme/app_colors.dart';
 import 'package:bp_monitor_iot/core/theme/app_theme.dart';
 import 'package:bp_monitor_iot/features/history/model/patient_model.dart';
 
+import '../../../analysis/analysis_screen.dart';
+
 class PatientDetailsDialog extends StatelessWidget {
   final PatientModel patient;
-  final VoidCallback onAnalysis;
 
-  const PatientDetailsDialog({
-    super.key,
-    required this.patient,
-    required this.onAnalysis,
-  });
+  const PatientDetailsDialog({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,9 @@ class PatientDetailsDialog extends StatelessWidget {
                   radius: 24,
                   backgroundColor: AppColors.ecgGreen.withValues(alpha: 0.1),
                   child: Icon(
-                    patient.gender == AppStrings.genderMale ? Icons.male : Icons.female,
+                    patient.gender == AppStrings.genderMale
+                        ? Icons.male
+                        : Icons.female,
                     color: AppColors.ecgGreen,
                     size: 28,
                   ),
@@ -59,7 +58,9 @@ class PatientDetailsDialog extends StatelessWidget {
                     children: [
                       Text(
                         patient.name,
-                        style: AppTheme.textTheme.headlineSmall?.copyWith(fontSize: 20),
+                        style: AppTheme.textTheme.headlineSmall?.copyWith(
+                          fontSize: 20,
+                        ),
                       ),
                       Text(
                         '${patient.gender} • ${patient.age} ${AppStrings.years}',
@@ -71,7 +72,7 @@ class PatientDetailsDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Timestamp
             Row(
               children: [
@@ -90,7 +91,8 @@ class PatientDetailsDialog extends StatelessWidget {
               context,
               icon: Icons.speed,
               label: AppStrings.bloodPressure,
-              value: '${patient.bloodPressure.systolic.toInt()}/${patient.bloodPressure.diastolic.toInt()}',
+              value:
+                  '${patient.bloodPressure.systolic.toInt()}/${patient.bloodPressure.diastolic.toInt()}',
               unit: AppStrings.unitMmHg,
               color: AppColors.bpAmber,
             ),
@@ -112,16 +114,21 @@ class PatientDetailsDialog extends StatelessWidget {
               unit: AppStrings.unitPercentage,
               color: AppColors.spo2Cyan,
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Analysis Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(context);
-                  onAnalysis();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AnalysisScreen(patient: patient),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.analytics_outlined),
                 label: const Text(AppStrings.analysis),
@@ -166,7 +173,9 @@ class PatientDetailsDialog extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: AppTheme.textTheme.labelSmall?.copyWith(color: Colors.grey),
+                  style: AppTheme.textTheme.labelSmall?.copyWith(
+                    color: Colors.grey,
+                  ),
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -182,7 +191,9 @@ class PatientDetailsDialog extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       unit,
-                      style: AppTheme.textTheme.labelSmall?.copyWith(color: Colors.grey),
+                      style: AppTheme.textTheme.labelSmall?.copyWith(
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
