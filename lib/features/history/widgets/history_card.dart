@@ -4,11 +4,10 @@ import 'package:bp_monitor_iot/core/theme/app_colors.dart';
 import 'package:bp_monitor_iot/core/constants/app_strings.dart';
 import 'package:bp_monitor_iot/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dialogs/patient_details_dialog.dart';
 import '../model/patient_model.dart';
 import '../cubit/history_cubit.dart';
-import '../../../core/utils/dialogs/delete_confirmation_dialog.dart';
-import '../../../core/utils/dialogs/patient_details_dialog.dart';
-import '../../analysis/analysis_screen.dart';
+import 'dialogs/delete_confirmation_dialog.dart';
 
 class HistoryCard extends StatelessWidget {
   final PatientModel data;
@@ -16,7 +15,7 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String dateStr = DateFormat('MMM dd').format(data.timestamp);
+    String dateStr = DateFormat('dd MMM').format(data.timestamp);
     String timeStr = DateFormat('HH:mm').format(data.timestamp);
 
     return Container(
@@ -195,17 +194,7 @@ class HistoryCard extends StatelessWidget {
   void _showDetailsDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => PatientDetailsDialog(
-        patient: data,
-        onAnalysis: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AnalysisScreen(patient: data),
-            ),
-          );
-        },
-      ),
+      builder: (context) => PatientDetailsDialog(patient: data),
     );
   }
 }
