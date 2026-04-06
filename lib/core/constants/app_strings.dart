@@ -20,7 +20,10 @@ class AppStrings {
   static const String liveBloodPressure = 'Live Blood Pressure';
   static const String bloodPressure = 'Blood Pressure';
   static const String heartRate = 'Heart Rate';
+  static const String hr = 'HR';
+  static const String oxygen = 'Oxygen';
   static const String spo2 = 'SpO2';
+  static const String estimatedBp = 'Estimated BP';
 
   // Monitor Screen
   static const String ecgWaveform = 'ECG Waveform';

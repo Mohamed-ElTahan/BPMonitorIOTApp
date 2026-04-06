@@ -60,6 +60,6 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.multidex:multidex:2.0.1")
+    // No redundant multidex dependency needed for minSdk 21+
 }
 

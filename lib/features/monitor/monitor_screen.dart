@@ -51,7 +51,7 @@ class _MonitorScreen extends StatelessWidget {
       child: Stack(
         children: [
           const Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(8.0),
             child: Column(
               children: [
                 // ── Vitals region ─────────────────────────────────────────
