@@ -68,7 +68,7 @@ class AppTheme {
         bodyMedium: TextStyle(fontSize: 16, color: AppColors.lightTextPrimary),
         bodySmall: TextStyle(fontSize: 14, color: AppColors.lightTextSecondary),
         labelMedium: TextStyle(
-          fontSize: 14,
+          fontSize: 12,
           color: AppColors.lightTextSecondary,
         ),
         labelSmall: TextStyle(
