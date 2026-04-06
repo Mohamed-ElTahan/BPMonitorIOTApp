@@ -21,7 +21,7 @@ class VitalsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: Column(
           //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -29,12 +29,10 @@ class VitalsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, color: color, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 Text(
                   title,
-                  style: AppTheme.textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: AppTheme.textTheme.labelMedium,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -54,4 +52,3 @@ class VitalsCard extends StatelessWidget {
     );
   }
 }
-
