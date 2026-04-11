@@ -6,5 +6,5 @@ CSBPM/command ===> start or stop
 app recieve
 CSBPM/bp  ====> {"systolic": 120, "diastolic": 80}
 CSBPM/oximeter  ====> {"spo2":98,"hr":75}
-CSBPM/bpLive ====> double ===> 88.6
-CSBPM/ecg  =====> double ===> 88.6
+CSBPM/bpLive ====> double ===> 88.6 or [88.6,88.7,88.8,88.9]
+CSBPM/ecg  =====> double ===> 2.2 or [2.2,2.3,2.4,2]

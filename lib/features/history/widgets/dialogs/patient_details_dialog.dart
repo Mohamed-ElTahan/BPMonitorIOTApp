@@ -99,6 +99,16 @@ class PatientDetailsDialog extends StatelessWidget {
             const SizedBox(height: 16),
             _buildMetricRow(
               context,
+              icon: Icons.analytics,
+              label: AppStrings.estimatedBp,
+              value:
+                  '${patient.estimatedBloodPressure.systolic.toInt()}/${patient.estimatedBloodPressure.diastolic.toInt()}',
+              unit: AppStrings.unitMmHg,
+              color: Colors.deepPurpleAccent,
+            ),
+            const SizedBox(height: 16),
+            _buildMetricRow(
+              context,
               icon: Icons.favorite,
               label: AppStrings.heartRate,
               value: '${patient.oximeter.heartRate}',

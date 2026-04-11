@@ -19,13 +19,9 @@ class PatientModel extends PatientMeasurementModel {
 
     required super.oximeter,
     required super.bloodPressure,
+    required super.estimatedBloodPressure,
     required super.livePressure,
     required super.ecg,
-    super.creatinine,
-    super.bun,
-    super.alt,
-    super.ast,
-    super.glucose,
     required this.timestamp,
   });
 
@@ -46,6 +42,15 @@ class PatientModel extends PatientMeasurementModel {
       bp = BPModel.fromJson(json[FirebaseConstants.keyBloodPressure]);
     } else {
       bp = BPModel(systolic: 0.0, diastolic: 0.0);
+    }
+
+    // Parse estimated blood pressure
+    BPModel estBp;
+    if (json[FirebaseConstants.keyEstimatedBloodPressure]
+        is Map<String, dynamic>) {
+      estBp = BPModel.fromJson(json[FirebaseConstants.keyEstimatedBloodPressure]);
+    } else {
+      estBp = BPModel(systolic: 0.0, diastolic: 0.0);
     }
 
     // Parse oximeter for backward compatibility
@@ -80,6 +85,7 @@ class PatientModel extends PatientMeasurementModel {
                 ) ??
                 DateTime.now(),
       bloodPressure: bp,
+      estimatedBloodPressure: estBp,
       oximeter: oxi,
       livePressure: List<double>.from(
         json[FirebaseConstants.keyLivePressure] ?? [],
@@ -96,6 +102,7 @@ class PatientModel extends PatientMeasurementModel {
       FirebaseConstants.keyGender: gender,
       FirebaseConstants.keyAge: age,
       FirebaseConstants.keyBloodPressure: bloodPressure.toJson(),
+      FirebaseConstants.keyEstimatedBloodPressure: estimatedBloodPressure.toJson(),
       FirebaseConstants.keyOximeter: oximeter.toJson(),
       FirebaseConstants.keyLivePressure: livePressure,
       FirebaseConstants.keyEcg: ecg,

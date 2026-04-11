@@ -3,31 +3,23 @@ import 'oximeter_model.dart';
 
 class PatientMeasurementModel {
   final BPModel bloodPressure;
+  final BPModel estimatedBloodPressure;
   final OximeterModel oximeter;
   final List<double> livePressure;
   final List<double> ecg;
 
   const PatientMeasurementModel({
     required this.bloodPressure,
+    required this.estimatedBloodPressure,
     required this.oximeter,
     required this.livePressure,
     required this.ecg,
-    this.creatinine,
-    this.bun,
-    this.alt,
-    this.ast,
-    this.glucose,
   });
-
-  final double? creatinine;
-  final double? bun;
-  final double? alt;
-  final double? ast;
-  final double? glucose;
 
   PatientMeasurementModel copyWith({
     OximeterModel? oximeter,
     BPModel? bloodPressure,
+    BPModel? estimatedBloodPressure,
     List<double>? livePressure,
     List<double>? ecg,
     double? creatinine,
@@ -39,13 +31,10 @@ class PatientMeasurementModel {
     return PatientMeasurementModel(
       oximeter: oximeter ?? this.oximeter,
       bloodPressure: bloodPressure ?? this.bloodPressure,
+      estimatedBloodPressure:
+          estimatedBloodPressure ?? this.estimatedBloodPressure,
       livePressure: livePressure ?? this.livePressure,
       ecg: ecg ?? this.ecg,
-      creatinine: creatinine ?? this.creatinine,
-      bun: bun ?? this.bun,
-      alt: alt ?? this.alt,
-      ast: ast ?? this.ast,
-      glucose: glucose ?? this.glucose,
     );
   }
 
@@ -58,16 +47,42 @@ class PatientMeasurementModel {
     } else if (ecgData is num) {
       ecgPoints = [ecgData.toDouble()];
     }
-    return PatientMeasurementModel(
-      ecg: ecgPoints,
-      oximeter: OximeterModel(
-        spo2: (json['spo2'] as num?)?.toInt() ?? 0,
-        heartRate: (json['hr'] as num?)?.toInt() ?? 0,
-      ),
-      bloodPressure: BPModel(
+
+    BPModel bp;
+    if (json['bloodPressure'] is Map<String, dynamic>) {
+      bp = BPModel.fromJson(json['bloodPressure']);
+    } else {
+      bp = BPModel(
         systolic: (json['bp'] as num?)?.toDouble() ?? 0.0,
         diastolic: (json['bp'] as num?)?.toDouble() ?? 0.0,
-      ),
+      );
+    }
+
+    BPModel estBp;
+    if (json['estimatedBloodPressure'] is Map<String, dynamic>) {
+      estBp = BPModel.fromJson(json['estimatedBloodPressure']);
+    } else {
+      estBp = BPModel(
+        systolic: (json['estimated_bp'] as num?)?.toDouble() ?? 0.0,
+        diastolic: (json['estimated_bp'] as num?)?.toDouble() ?? 0.0,
+      );
+    }
+
+    OximeterModel oxi;
+    if (json['oximeter'] is Map<String, dynamic>) {
+      oxi = OximeterModel.fromJson(json['oximeter']);
+    } else {
+      oxi = OximeterModel(
+        spo2: (json['spo2'] as num?)?.toInt() ?? 0,
+        heartRate: (json['hr'] as num?)?.toInt() ?? 0,
+      );
+    }
+
+    return PatientMeasurementModel(
+      ecg: ecgPoints,
+      oximeter: oxi,
+      bloodPressure: bp,
+      estimatedBloodPressure: estBp,
       livePressure:
           (json['live_pressure'] as List<num>?)
               ?.map((e) => e.toDouble())
@@ -80,8 +95,9 @@ class PatientMeasurementModel {
   Map<String, dynamic> toJson() {
     return {
       'ecg': ecg,
-      'oximeter': oximeter,
-      'bloodPressure': bloodPressure,
+      'oximeter': oximeter.toJson(),
+      'bloodPressure': bloodPressure.toJson(),
+      'estimatedBloodPressure': estimatedBloodPressure.toJson(),
       'live_pressure': livePressure,
     };
   }

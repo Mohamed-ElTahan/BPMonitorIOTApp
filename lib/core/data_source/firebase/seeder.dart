@@ -13,18 +13,17 @@ class DataSeeder {
     {
       'name': 'Al-Hassan Hisham',
       'role': 'Electronics and Communication Enginnerring',
-      'bio':
-          'Node.js and Firebase expert focused on building scalable cloud infrastructures and real-time database solutions.',
+      'bio': 'Cyber Security focused on building secure and reliable systems.',
       'githubUrl': 'https://github.com/member2',
       'email': 'member2@gmail.com',
       'linkedInUrl': 'https://linkedin.com/in/member2',
-      'whatsappNumber': '+20123456780',
+      'whatsappNumber': '+20123456789',
     },
     {
       'name': 'Abdullah Ahmed Saeid',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
-          'Creative designer dedicated to crafting beautiful, intuitive user experiences and premium visual identities.',
+          'Linux and embedded systems focused on building secure and reliable systems.',
       'githubUrl': '',
       'email': 'member3@gmail.com',
       'linkedInUrl': 'https://linkedin.com/in/member3',
@@ -33,8 +32,7 @@ class DataSeeder {
     {
       'name': 'Mohamed Ahmed Abdel Tawab',
       'role': 'Electronics and Communication Enginnerring',
-      'bio':
-          'Meticulous QA engineer ensuring application stability through comprehensive automated and manual testing strategies.',
+      'bio': 'soft skills and communication focused on building a good team.',
       'githubUrl': 'https://github.com/member4',
       'email': 'member4@gmail.com',
       'linkedInUrl': 'https://linkedin.com/in/member4',
@@ -44,7 +42,7 @@ class DataSeeder {
       'name': 'Mostafa Sayed Ragaei',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
-          'System architect with a focus on high-performance APIs and data security.',
+          'Communication and antennas focused on building secure and reliable systems.',
       'githubUrl': 'https://github.com/member5',
       'email': 'member5@gmail.com',
       'linkedInUrl': 'https://linkedin.com/in/member5',
@@ -73,7 +71,7 @@ class DataSeeder {
       'name': 'Abrar Khaled',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
-          'Cloud computing enthusiast specializing in serverless architectures.',
+          'Human-centered designer focusing on accessibility and inclusive design.',
       'githubUrl': 'https://github.com/member8',
       'email': 'member8@gmail.com',
       'linkedInUrl': 'https://linkedin.com/in/member8',

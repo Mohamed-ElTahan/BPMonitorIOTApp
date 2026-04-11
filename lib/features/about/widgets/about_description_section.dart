@@ -10,7 +10,7 @@ class AboutDescriptionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: context.responsive(mobile: 8.0, tablet: 40.0),
+        horizontal: context.responsive(mobile: 8.0, tablet: 20.0),
       ),
       child: Text(
         AppStrings.aboutDescription,

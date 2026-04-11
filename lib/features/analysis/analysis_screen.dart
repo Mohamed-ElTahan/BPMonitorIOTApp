@@ -9,6 +9,8 @@ import 'widgets/analysis_card.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/constants/app_strings.dart';
+import '../monitor/widgets/ecg_chart.dart';
+import '../monitor/widgets/bp_chart.dart';
 
 class AnalysisScreen extends StatelessWidget {
   final PatientModel patient;
@@ -17,7 +19,7 @@ class AnalysisScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AnalysisCubit(),
+      create: (context) => AnalysisCubit()..analyzePatient(patient),
       child: _AnalysisScreen(patient: patient),
     );
   }
@@ -83,6 +85,16 @@ class _AnalysisScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           AnalysisCard(
+            title: AppStrings.estimatedBp,
+            value:
+                '${patient.estimatedBloodPressure.systolic.toInt()}/${patient.estimatedBloodPressure.diastolic.toInt()}',
+            unit: AppStrings.unitMmHg,
+            interpretation: result.estimatedBP,
+            icon: Icons.analytics,
+          ),
+          const SizedBox(height: 20),
+
+          AnalysisCard(
             title: AppStrings.heartRate,
             value: '${patient.oximeter.heartRate}',
             unit: AppStrings.unitBpm,
@@ -98,45 +110,27 @@ class _AnalysisScreen extends StatelessWidget {
             interpretation: result.spo2,
             icon: Icons.water_drop,
           ),
-          
-          if (result.glucose != null) ...[
-            const SizedBox(height: 32),
-            _buildSectionHeader('METABOLIC HEALTH'),
-            AnalysisCard(
-              title: 'Blood Glucose',
-              value: '${patient.glucose?.toInt() ?? 0}',
-              unit: 'mg/dL',
-              interpretation: result.glucose!,
-              icon: Icons.bloodtype,
-            ),
-          ],
-
-          if (result.kidney != null || result.liver != null) ...[
-            const SizedBox(height: 32),
-            _buildSectionHeader('ORGAN HEALTH'),
-            if (result.kidney != null) ...[
-              AnalysisCard(
-                title: 'Kidney Function',
-                value:
-                    '${patient.creatinine ?? 0}/${patient.bun ?? 0}',
-                unit: 'Cr/BUN',
-                interpretation: result.kidney!,
-                icon: Icons.spa,
-              ),
-              const SizedBox(height: 20),
-            ],
-            if (result.liver != null) ...[
-              AnalysisCard(
-                title: 'Liver Function',
-                value: '${patient.alt ?? 0}/${patient.ast ?? 0}',
-                unit: 'ALT/AST',
-                interpretation: result.liver!,
-                icon: Icons.medication,
-              ),
-            ],
-          ],
 
           const SizedBox(height: 40),
+          if (patient.ecg.isNotEmpty || patient.livePressure.isNotEmpty) ...[
+            _buildSectionHeader('DIAGNOSTIC WAVEFORMS'),
+            if (patient.ecg.isNotEmpty) ...[
+              _buildChartLabel('ECG Waveform'),
+              const SizedBox(height: 8),
+              SizedBox(height: 220, child: EcgChart(dataPoints: patient.ecg)),
+              const SizedBox(height: 24),
+            ],
+            if (patient.livePressure.isNotEmpty) ...[
+              _buildChartLabel('ARTERIAL PRESSURE WAVE'),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 220,
+                child: BpChart(dataPoints: patient.livePressure),
+              ),
+              const SizedBox(height: 24),
+            ],
+            const SizedBox(height: 16),
+          ],
 
           // Disclaimer
           Container(
@@ -177,6 +171,7 @@ class _AnalysisScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 20),
@@ -186,6 +181,19 @@ class _AnalysisScreen extends StatelessWidget {
           fontWeight: FontWeight.w900,
           letterSpacing: 1.5,
           color: AppColors.lightTextSecondary.withValues(alpha: 0.7),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChartLabel(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        title,
+        style: AppTheme.textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightTextSecondary.withValues(alpha: 0.9),
         ),
       ),
     );
