@@ -23,11 +23,11 @@ class DataSeeder {
       'name': 'Abdullah Ahmed Saeid',
       'role': 'Electronics and Communication Enginnerring',
       'bio':
-          'Linux and embedded systems focused on building secure and reliable systems.',
-      'githubUrl': '',
-      'email': 'member3@gmail.com',
-      'linkedInUrl': 'https://linkedin.com/in/member3',
-      'whatsappNumber': '+20123456781',
+          'Linux and embedded systems. Junior sys admin, Senior tinkerer. breaking things is a joy for me :)',
+      'githubUrl': 'https://codeberg.org/Bed0_o',
+      'email': 'bedo.khalaaf@proton.me',
+      'linkedInUrl': 'https://www.linkedin.com/in/bedo-karam-37210b220/',
+      'whatsappNumber': '+201067321373',
     },
     {
       'name': 'Mohamed Ahmed Abdel Tawab',
