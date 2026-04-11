@@ -37,21 +37,15 @@ class _ChartsPanelState extends State<ChartsPanel> {
     return BlocBuilder<MonitorCubit, MonitorState>(
       buildWhen: (prev, curr) {
         if (prev is MonitorConnected && curr is MonitorConnected) {
-          // Only rebuild if the chart index OR data changes
-          return prev.currentChartIndex != curr.currentChartIndex ||
-              prev.currentVitals != curr.currentVitals;
+          return prev.currentChartIndex != curr.currentChartIndex;
         }
         return prev.runtimeType != curr.runtimeType;
       },
       builder: (context, state) {
         final isConnected = state is MonitorConnected;
         final currentIndex = isConnected ? state.currentChartIndex : 0;
-        final ecgData = isConnected ? state.currentVitals.ecg : <double>[];
-        final livePressureData = isConnected
-            ? state.currentVitals.livePressure
-            : <double>[];
 
-        // Ensure PageController is in sync with state index (e.g. if changed from elsewhere)
+        // Ensure PageController is in sync with state index
         if (_pageController.hasClients &&
             _pageController.page?.round() != currentIndex) {
           _pageController.animateToPage(
@@ -62,12 +56,12 @@ class _ChartsPanelState extends State<ChartsPanel> {
         }
 
         final bool isPressureChart = currentIndex == 0;
-        final String title = isPressureChart
-            ? AppStrings.liveBloodPressure
-            : AppStrings.ecgWaveform;
-        final Color themeColor = isPressureChart
-            ? AppColors.bpAmber
-            : AppColors.ecgGreen;
+        final String title =
+            isPressureChart
+                ? AppStrings.liveBloodPressure
+                : AppStrings.ecgWaveform;
+        final Color themeColor =
+            isPressureChart ? AppColors.bpAmber : AppColors.ecgGreen;
 
         return Column(
           children: [
@@ -96,7 +90,7 @@ class _ChartsPanelState extends State<ChartsPanel> {
                       ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Icon(
                     isPressureChart
                         ? Icons.bloodtype_outlined
@@ -114,15 +108,9 @@ class _ChartsPanelState extends State<ChartsPanel> {
                 onPageChanged: (index) {
                   context.read<MonitorCubit>().changeChart(index);
                 },
-                children: [
-                  BpChartCardWidget(
-                    isConnected: isConnected,
-                    livePressureData: livePressureData,
-                  ),
-                  EcgChartCardWidget(
-                    isConnected: isConnected,
-                    ecgData: ecgData,
-                  ),
+                children: const [
+                  BpChartCardWidget(),
+                  EcgChartCardWidget(),
                 ],
               ),
             ),
@@ -136,9 +124,12 @@ class _ChartsPanelState extends State<ChartsPanel> {
                   height: 8,
                   width: currentIndex == index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color: currentIndex == index
-                        ? (index == 0 ? AppColors.bpAmber : AppColors.ecgGreen)
-                        : AppColors.lightCardBorder,
+                    color:
+                        currentIndex == index
+                            ? (index == 0
+                                ? AppColors.bpAmber
+                                : AppColors.ecgGreen)
+                            : AppColors.lightCardBorder,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
