@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../repository/monitor_repository.dart';
 import '../models/patient_measurement_model.dart';
 import '../models/bp_model.dart';
 import '../models/oximeter_model.dart';
 import 'monitor_state.dart';
+import 'bp_estimator.dart';
 import '../../history/model/patient_model.dart';
 import '../../../core/data_source/firebase/firestore_data_source.dart';
 
@@ -16,7 +17,8 @@ class MonitorCubit extends Cubit<MonitorState> {
   // Rolling buffers for ECG and BP points (max 150 points for graph).
   final List<double> _rollingEcgPoints = [];
   final List<double> _rollingBpPoints = [];
-  static const int _maxDataPoints = 150;
+  static const int _maxEcgPoints = 1000;
+  static const int _maxBpPoints = 300;
 
   StreamSubscription? _connectionSub;
   StreamSubscription? _deviceSub;
@@ -53,34 +55,34 @@ class MonitorCubit extends Cubit<MonitorState> {
       // Offline status removed as it is now handled in the app bar
     });
 
-    _bpLiveSub = repository.getBPLiveStream().listen((bpLive) {
-      if (state is MonitorConnected) {
-        final current = state as MonitorConnected;
-        _updateVitals(
-          current.currentVitals.copyWith(livePressure: [bpLive.toDouble()]),
-        );
+    _bpLiveSub = repository.getBPLiveStream().listen((bpLiveList) {
+      if (kDebugMode && bpLiveList.isNotEmpty) {
+        debugPrint('🩸 BP Live Received: ${bpLiveList.length} pts');
       }
+      _updateVitals(bpLiveChunk: bpLiveList);
     });
 
     _bpSub = repository.getBPStream().listen((bpModel) {
-      if (state is MonitorConnected) {
-        final current = state as MonitorConnected;
-        _updateVitals(current.currentVitals.copyWith(bloodPressure: bpModel));
+      if (kDebugMode) {
+        debugPrint(
+          '🩺 BP Static Received: ${bpModel.systolic}/${bpModel.diastolic}',
+        );
       }
+      _updateVitals(bloodPressure: bpModel);
     });
 
-    _ecgSub = repository.getEcgStream().listen((ecgPoint) {
-      if (state is MonitorConnected) {
-        final current = state as MonitorConnected;
-        _updateVitals(current.currentVitals.copyWith(ecg: [ecgPoint]));
+    _ecgSub = repository.getEcgStream().listen((ecgList) {
+      if (kDebugMode && ecgList.isNotEmpty) {
+        debugPrint('🫀 ECG Received: ${ecgList.length} pts');
       }
+      _updateVitals(ecgChunk: ecgList);
     });
 
     _oximeterSub = repository.getOximeterStream().listen((oxi) {
-      if (state is MonitorConnected) {
-        final current = state as MonitorConnected;
-        _updateVitals(current.currentVitals.copyWith(oximeter: oxi));
+      if (kDebugMode) {
+        debugPrint('⌚ Oximeter Received: HR ${oxi.heartRate}, SpO2 ${oxi.spo2}');
       }
+      _updateVitals(oximeter: oxi);
     });
 
     repository.mqtt.connect();
@@ -94,6 +96,7 @@ class MonitorCubit extends Cubit<MonitorState> {
   static PatientMeasurementModel _emptyVitals() {
     return PatientMeasurementModel(
       bloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
+      estimatedBloodPressure: BPModel(systolic: 0.0, diastolic: 0.0),
       oximeter: OximeterModel(spo2: 0, heartRate: 0),
       livePressure: const [],
       ecg: const [],
@@ -102,38 +105,65 @@ class MonitorCubit extends Cubit<MonitorState> {
 
   /// Appends incoming ECG points to the rolling buffer (O(n) trim via sublist),
   /// then emits a new [MonitorConnected] state preserving existing flags.
-  void _updateVitals(PatientMeasurementModel vitals) {
+  void _updateVitals({
+    List<double>? ecgChunk,
+    List<double>? bpLiveChunk,
+    BPModel? bloodPressure,
+    OximeterModel? oximeter,
+  }) {
     if (state is! MonitorConnected) return;
 
     final current = state as MonitorConnected;
 
+    final hasNewEcg = ecgChunk != null && ecgChunk.isNotEmpty;
+    final hasNewBp = bpLiveChunk != null && bpLiveChunk.isNotEmpty;
+
     // Append new ECG points.
-    if (vitals.ecg.isNotEmpty) {
-      _rollingEcgPoints.addAll(vitals.ecg);
-      if (_rollingEcgPoints.length > _maxDataPoints) {
+    if (hasNewEcg) {
+      _rollingEcgPoints.addAll(ecgChunk);
+      if (_rollingEcgPoints.length > _maxEcgPoints) {
         _rollingEcgPoints.removeRange(
           0,
-          _rollingEcgPoints.length - _maxDataPoints,
+          _rollingEcgPoints.length - _maxEcgPoints,
         );
       }
     }
 
     // Append new BP points.
-    if (vitals.livePressure.isNotEmpty) {
-      _rollingBpPoints.addAll(vitals.livePressure);
-      if (_rollingBpPoints.length > _maxDataPoints) {
+    if (hasNewBp) {
+      // Clamp values to minimum 0.0 as requested
+      final clampedPoints = bpLiveChunk.map((v) => v < 0 ? 0.0 : v);
+      _rollingBpPoints.addAll(clampedPoints);
+      if (_rollingBpPoints.length > _maxBpPoints) {
         _rollingBpPoints.removeRange(
           0,
-          _rollingBpPoints.length - _maxDataPoints,
+          _rollingBpPoints.length - _maxBpPoints,
         );
       }
     }
 
+    final updatedVitals = current.currentVitals;
+
     emit(
       current.copyWithState(
-        currentVitals: vitals.copyWith(
-          ecg: List<double>.from(_rollingEcgPoints),
-          livePressure: List<double>.from(_rollingBpPoints),
+        currentVitals: updatedVitals.copyWith(
+          bloodPressure: bloodPressure ?? updatedVitals.bloodPressure,
+          oximeter: oximeter ?? updatedVitals.oximeter,
+          // REFERENCE STABILITY:
+          // Only emit a NEW list if we actually added data to it.
+          // This prevents charts from rebuilding when unrelated data (e.g. HR) arrives.
+          ecg:
+              hasNewEcg
+                  ? List<double>.from(_rollingEcgPoints)
+                  : updatedVitals.ecg,
+          livePressure:
+              hasNewBp
+                  ? List<double>.from(_rollingBpPoints)
+                  : updatedVitals.livePressure,
+          estimatedBloodPressure: BpEstimator.estimate(
+            (oximeter ?? updatedVitals.oximeter).heartRate,
+            (oximeter ?? updatedVitals.oximeter).spo2,
+          ),
         ),
       ),
     );
@@ -191,9 +221,10 @@ class MonitorCubit extends Cubit<MonitorState> {
           age: age,
           timestamp: DateTime.now(),
           bloodPressure: vitals.bloodPressure,
+          estimatedBloodPressure: vitals.estimatedBloodPressure,
           oximeter: vitals.oximeter,
-          livePressure: vitals.livePressure.map((e) => e.toDouble()).toList(),
-          ecg: const [],
+          livePressure: vitals.livePressure,
+          ecg: vitals.ecg,
         ),
       );
 
@@ -205,7 +236,7 @@ class MonitorCubit extends Cubit<MonitorState> {
         ),
       );
     } catch (e) {
-      if (kDebugMode) print('❌ Error saving vitals: $e');
+      debugPrint('Error fetching historical data: $e');
       emit(
         MonitorSaveResult(
           currentVitals: vitals,
