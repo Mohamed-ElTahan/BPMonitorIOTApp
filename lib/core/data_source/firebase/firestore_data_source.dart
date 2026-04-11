@@ -70,6 +70,7 @@ class FirestoreDataSource {
   }
 
   // One-time seed for all profiles
+  // or update data AllProfiles
   Future<void> seedAllProfiles() async {
     final profiles = DataSeeder.teamProfiles;
     final batch = _firestore.batch();
@@ -80,7 +81,7 @@ class FirestoreDataSource {
           .doc(profile['name'] as String);
       batch.set(docRef, profile);
     }
-
+    print('All profiles seeded successfully');
     await batch.commit();
   }
 }
