@@ -11,6 +11,7 @@ class FirebaseConstants {
   static const String keyOximeter = 'oximeter';
   static const String keyLivePressure = 'livePressure';
   static const String keyEcg = 'ecg';
+  static const String keyEstimatedBloodPressure = 'estimatedBloodPressure';
   static const String keyTimestamp = 'timestamp';
 
   // BP Keys
