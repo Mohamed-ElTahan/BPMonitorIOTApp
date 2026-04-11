@@ -47,19 +47,19 @@ class _AboutScreenState extends State<AboutScreen> {
             delay: const Duration(milliseconds: 0),
             child: const AboutAppHeader(),
           ),
-          SizedBox(height: context.responsive(mobile: 32, tablet: 64)),
+          SizedBox(height: context.responsive(mobile: 12, tablet: 24)),
           _AnimatedEntrance(
             isVisible: _isVisible,
             delay: const Duration(milliseconds: 300),
             child: const AboutDescriptionSection(),
           ),
-          SizedBox(height: context.responsive(mobile: 40, tablet: 80)),
+          SizedBox(height: context.responsive(mobile: 20, tablet: 40)),
           _AnimatedEntrance(
             isVisible: _isVisible,
             delay: const Duration(milliseconds: 600),
             child: const AboutNavigationGroup(),
           ),
-          SizedBox(height: context.responsive(mobile: 48, tablet: 96)),
+          SizedBox(height: context.responsive(mobile: 24, tablet: 48)),
           _AnimatedEntrance(
             isVisible: _isVisible,
             delay: const Duration(milliseconds: 900),
