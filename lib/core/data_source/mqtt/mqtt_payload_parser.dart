@@ -12,9 +12,17 @@ class MqttPayloadParser {
         case HiveMqConstant.kTopicBP:
           return BPModel.fromJson(jsonDecode(payload) as Map<String, dynamic>);
         case HiveMqConstant.kTopicBPLive:
-          return double.tryParse(payload);
+          final decoded = jsonDecode(payload);
+          if (decoded is List) {
+            return decoded.map((e) => (e as num).toDouble()).toList();
+          }
+          return [(decoded as num).toDouble()];
         case HiveMqConstant.kTopicEcg:
-          return double.tryParse(payload);
+          final decoded = jsonDecode(payload);
+          if (decoded is List) {
+            return decoded.map((e) => (e as num).toDouble()).toList();
+          }
+          return [(decoded as num).toDouble()];
         case HiveMqConstant.kTopicOximeter:
           return OximeterModel.fromJson(
             jsonDecode(payload) as Map<String, dynamic>,
