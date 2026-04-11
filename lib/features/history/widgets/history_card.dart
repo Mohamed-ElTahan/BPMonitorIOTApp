@@ -180,13 +180,17 @@ class HistoryCard extends StatelessWidget {
   }
 
   void _showDeleteDialog(BuildContext context) {
+    final historyCubit = context.read<HistoryCubit>();
     showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
-        patient: data,
-        onDelete: () {
-          context.read<HistoryCubit>().deletePatientRecord(data.id!);
-        },
+      builder: (context) => BlocProvider.value(
+        value: historyCubit,
+        child: DeleteConfirmationDialog(
+          patient: data,
+          onDelete: () {
+            historyCubit.deletePatientRecord(data.id!);
+          },
+        ),
       ),
     );
   }
