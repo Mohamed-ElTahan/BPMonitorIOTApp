@@ -25,15 +25,15 @@ class MqttDataSource {
 
   // ─── Output Streams ───────────────────────────────────────────────────────
   final _bpController = StreamController<BPModel>.broadcast();
-  final _bpLiveController = StreamController<double>.broadcast();
-  final _ecgController = StreamController<double>.broadcast();
+  final _bpLiveController = StreamController<List<double>>.broadcast();
+  final _ecgController = StreamController<List<double>>.broadcast();
   final _oximeterController = StreamController<OximeterModel>.broadcast();
   final _deviceStatusController = StreamController<bool>.broadcast();
   final _connectionController = StreamController<bool>.broadcast();
 
   Stream<BPModel> get bpStream => _bpController.stream;
-  Stream<double> get bpLiveStream => _bpLiveController.stream;
-  Stream<double> get ecgStream => _ecgController.stream;
+  Stream<List<double>> get bpLiveStream => _bpLiveController.stream;
+  Stream<List<double>> get ecgStream => _ecgController.stream;
   Stream<OximeterModel> get oximeterStream => _oximeterController.stream;
   Stream<bool> get deviceStatusStream => _deviceStatusController.stream;
   Stream<bool> get connectionStream => _connectionController.stream;
@@ -148,9 +148,9 @@ class MqttDataSource {
       case HiveMqConstant.kTopicBP:
         _bpController.add(data as BPModel);
       case HiveMqConstant.kTopicBPLive:
-        _bpLiveController.add((data as num).toDouble());
+        _bpLiveController.add(data as List<double>);
       case HiveMqConstant.kTopicEcg:
-        _ecgController.add((data as num).toDouble());
+        _ecgController.add(data as List<double>);
       case HiveMqConstant.kTopicOximeter:
         _oximeterController.add(data as OximeterModel);
       case HiveMqConstant.kTopicAppStatus:
