@@ -51,7 +51,9 @@ class AnalysisCard extends StatelessWidget {
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
-                widthFactor: interpretation.status == VitalsStatus.normal ? 1.0 : 0.6, // Visual hint
+                widthFactor: interpretation.status == VitalsStatus.normal
+                    ? 1.0
+                    : 0.6, // Visual hint
                 child: Container(color: interpretation.color),
               ),
             ),
@@ -62,29 +64,45 @@ class AnalysisCard extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: interpretation.color.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(14),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: interpretation.color.withValues(
+                                  alpha: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Icon(
+                                icon,
+                                color: interpretation.color,
+                                size: 22,
+                              ),
                             ),
-                            child: Icon(icon, color: interpretation.color, size: 22),
-                          ),
-                          const SizedBox(width: 14),
-                          Text(
-                            title,
-                            style: AppTheme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.lightTextPrimary,
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: AppTheme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.lightTextPrimary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: interpretation.color.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
@@ -100,6 +118,7 @@ class AnalysisCard extends StatelessWidget {
                             fontSize: 10,
                             letterSpacing: 1.2,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -132,7 +151,9 @@ class AnalysisCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.lightScaffoldBackground.withValues(alpha: 0.5),
+                      color: AppColors.lightScaffoldBackground.withValues(
+                        alpha: 0.5,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
