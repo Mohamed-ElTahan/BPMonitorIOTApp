@@ -39,8 +39,8 @@ class VitalsRowWidget extends StatelessWidget {
             value: livePressure.isNotEmpty
                 ? livePressure.last.toStringAsFixed(1)
                 : "--",
-            subtitle: AppStrings.unitMmHg,
-            color: AppColors.spo2Cyan,
+            unit: AppStrings.unitMmHg,
+            iconColor: AppColors.spo2Cyan,
             icon: Icons.compress,
           ),
         ),
@@ -49,8 +49,8 @@ class VitalsRowWidget extends StatelessWidget {
           child: VitalsCard(
             title: AppStrings.bloodPressure,
             value: "${sys.toStringAsFixed(1)}/${dia.toStringAsFixed(1)}",
-            subtitle: AppStrings.unitMmHg,
-            color: AppColors.bpAmber,
+            unit: AppStrings.unitMmHg,
+            iconColor: AppColors.bpAmber,
             icon: Icons.speed,
           ),
         ),
@@ -59,8 +59,8 @@ class VitalsRowWidget extends StatelessWidget {
           child: VitalsCard(
             title: AppStrings.heartRate,
             value: hr.toInt().toString(),
-            subtitle: AppStrings.unitBpm,
-            color: AppColors.heartRateRed,
+            unit: AppStrings.unitBpm,
+            iconColor: AppColors.heartRateRed,
             icon: Icons.heart_broken_outlined,
           ),
         ),
@@ -69,8 +69,8 @@ class VitalsRowWidget extends StatelessWidget {
           child: VitalsCard(
             title: AppStrings.oxygen,
             value: "${spo2.toString()}%",
-            subtitle: AppStrings.spo2,
-            color: AppColors.spo2Cyan,
+            unit: AppStrings.spo2,
+            iconColor: AppColors.spo2Cyan,
             icon: Icons.water_drop,
           ),
         ),
@@ -80,8 +80,8 @@ class VitalsRowWidget extends StatelessWidget {
             title: AppStrings.estimatedBp,
             value:
                 "${estimatedBp.systolic.toStringAsFixed(0)}/${estimatedBp.diastolic.toStringAsFixed(0)}",
-            subtitle: AppStrings.unitMmHg,
-            color: Colors.deepPurpleAccent,
+            unit: AppStrings.unitMmHg,
+            iconColor: Colors.deepPurpleAccent,
             icon: Icons.analytics,
           ),
         ),

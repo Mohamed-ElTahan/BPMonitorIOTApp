@@ -37,6 +37,7 @@ class BioCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             bio,
+            textAlign: TextAlign.justify,
             style: TextStyle(
               fontSize: 14,
               color: AppColors.lightTextSecondary,

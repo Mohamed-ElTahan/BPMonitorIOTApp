@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
 
 class VitalsCard extends StatelessWidget {
   final String title;
   final String value;
-  final String? subtitle;
-  final Color color;
+  final String unit;
+  final Color iconColor;
   final IconData icon;
 
   const VitalsCard({
     super.key,
     required this.title,
     required this.value,
-    this.subtitle,
-    required this.color,
+    required this.unit,
+    required this.iconColor,
     required this.icon,
   });
 
@@ -21,31 +20,44 @@ class VitalsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 12),
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: color, size: 20),
-                const SizedBox(width: 4),
+                Icon(icon, color: iconColor, size: 20),
+                const SizedBox(width: 2),
                 Text(
                   title,
-                  style: AppTheme.textTheme.labelMedium,
-                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.visible,
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+
             Text(
               value,
-              style: AppTheme.textTheme.headlineSmall?.copyWith(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.black,
               ),
             ),
-            if (subtitle != null)
-              Text(subtitle!, style: AppTheme.textTheme.labelSmall),
+
+            Text(
+              unit,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black54,
+              ),
+            ),
           ],
         ),
       ),

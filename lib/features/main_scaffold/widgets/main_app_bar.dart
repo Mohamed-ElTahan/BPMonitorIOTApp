@@ -24,7 +24,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Text(title),
                 Text(
                   AppStrings.appName,
-                  style: Theme.of(context).textTheme.labelSmall,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 17, 0, 255),
+                  ),
                 ),
               ],
             ),
