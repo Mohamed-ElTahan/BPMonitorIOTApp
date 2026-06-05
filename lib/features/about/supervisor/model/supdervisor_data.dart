@@ -1,0 +1,19 @@
+import 'supervisor_model.dart';
+
+class SupervisorData {
+  static final SupervisorModel drGamal = SupervisorModel(
+    name: 'Prof. Gamal El-Sheikha',
+    role: 'Professor of Electronics and Communications Engineering',
+    image: 'assets/team_image/dr_gamal.png',
+    bio:
+        'Dr. Gamal El-Sheikh has received his B.Sc. in Electrical Engineering from Military Technical College (MTC), Cairo, Egypt, in 1980. He has worked as maintenance, tuning and repair electrical engineer. Main workshop for guidance and control systems, Egyptian Army, 1980-1985. Then he joined the MTC from 1985 until 2004. He worked as Instructor and research assistant, Dept. of Guidance and Control at the Military Technical College, Cairo, Egypt, 1985-1987. He worked as Part time M.Sc. student, Full time teaching assistant at the Dept. of Guidance and Control at the Military Technical College, Cairo. Egypt, 1987-1990. He has got his M.Sc. in Electrical Engineering (guidance, control and navigation) from MTC, Cairo, Egypt, in 1990. He has got his PhD degree in Electrical Engineering (robust self-tuning control with aerospace applications) from the Industrial Control Centre, Strathclyde University. UK, 1994. He joined back the MTC as Lecturer and Chief for the Guidance and Control Engineering Group, Dept. of Guidance and Control, MTC, Cairo, Egypt, 1994-2000. He awarded Associate Professor in Electrical Engineering, and Chief of the Dept. of Guidance and Control, MTC, Cairo, Egypt, 2000-2004. He worked as Full time professor in Electronics and Communications, Faculty of Engineering, MSA University, 2004-2006. Full time professor, Head of the Computers and Information Sciences Department, High Institute for Management, Banking, Computers and Information Sciences, Sciences Valley Academy (SVA), 2006-2008. He worked as Visiting Professor in College of Engineering, Karary University, Republic of Sudan, 2008-2009. Now he is a Visiting Professor in MTC, Cairo. He has cooperative postgraduate-research supervision with MTC, Cairo University aerospace Engineering, Alexandria University, Helwan University. Supervisor of (40) PhD and MSC Thesis and (3) under-supervision; Examiner: Internal (40) and External (20 MSc + 4 PhD); and author of more than (80) papers published in local and international journals and conferences. His research interests include control theories and design (Classical, Modern, Robust -LOG-GLQG-H .- GH., Adaptive, Self-Tuning Control); Systems identification (linear and non-linear) with conventional and intelligent techniques; Computers Control; Systems Simulation and Data Acquisition; Autopilot design and analysis; Embedded systems with automation of industrial applications, PLC (Programmable Logic Controllers) and microcontrollers (Atmell,PIC) with Arduino technologies; Inertial Sensors (Gyroscopes and Accelerometers) in different technologies including: conventional, laser, fiber-optic, solid state and MEMS. MEMS actuators, GPS; Guidance, Navigation and Control with Autopilot design and embedded Flight Control.',
+  );
+
+  static final SupervisorModel assLecAsmaa = SupervisorModel(
+    name: 'Ass. Lecture Asmaa Radi',
+    role: 'Ass. Lec. of Electronics and Communications Engineering',
+    image: 'assets/team_image/profile.png',
+    bio:
+        'Assistant Lecturer Asmaa Radi holds a Master of Science degree in Electrical Engineering from Military Technical College, Egypt. She has worked as a Teaching Assistant at the Faculty of Engineering, Cairo University, and currently serves as an Assistant Lecturer at the Military Technical College, specializing in biomedical instrumentation and digital signal processing. She has contributed to several research projects focused on the development of advanced medical devices and machine learning applications in healthcare.',
+  );
+}
