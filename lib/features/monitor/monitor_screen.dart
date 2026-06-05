@@ -57,7 +57,7 @@ class _MonitorScreen extends StatelessWidget {
                 // ── Vitals region ─────────────────────────────────────────
                 VitalsPanel(),
 
-                SizedBox(height: 10),
+                SizedBox(height: 8),
 
                 // ── Charts region (ECG/BP PageView) ───────────────────────
                 Expanded(child: ChartsPanel()),
