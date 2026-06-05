@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/monitor_cubit.dart';
 import '../cubit/monitor_state.dart';
 import 'monitor_screen_selectors.dart';
+import 'vitals_column_widget.dart';
 import 'vitals_row_widget.dart';
 
 class VitalsPanel extends StatelessWidget {
@@ -23,17 +24,24 @@ class VitalsPanel extends StatelessWidget {
         }
         return const VitalsSnapshot.empty();
       },
-      builder: (context, snapshot) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          VitalsRowWidget(
-            livePressure: snapshot.livePressure,
-            sys: snapshot.sys,
-            dia: snapshot.dia,
-            hr: snapshot.hr,
-            spo2: snapshot.spo2,
-          ),
-        ],
+      // builder: (context, snapshot) => Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     VitalsRowWidget(
+      //       livePressure: snapshot.livePressure,
+      //       sys: snapshot.sys,
+      //       dia: snapshot.dia,
+      //       hr: snapshot.hr,
+      //       spo2: snapshot.spo2,
+      //     ),
+      //   ],
+      // ),
+      builder: (context, snapshot) => VitalsColumnWidget(
+        livePressure: snapshot.livePressure,
+        sys: snapshot.sys,
+        dia: snapshot.dia,
+        hr: snapshot.hr,
+        spo2: snapshot.spo2,
       ),
     );
   }
