@@ -1,8 +1,11 @@
+import 'package:bp_monitor_iot/features/about/supervisor/model/supdervisor_data.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/extensions/context_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import 'model/supervisor_model.dart';
+import 'widgets/supervisor_about.dart';
 
 class SupervisorScreen extends StatelessWidget {
   const SupervisorScreen({super.key});
@@ -10,7 +13,7 @@ class SupervisorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = context.responsive(mobile: 24.0, tablet: 48.0);
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -26,20 +29,11 @@ class SupervisorScreen extends StatelessWidget {
           children: [
             _buildHero(context),
             SizedBox(height: context.responsive(mobile: 40, tablet: 60)),
-            _buildSupervisorCard(
-              context,
-              name: AppStrings.supervisorName1,
-              title: AppStrings.supervisorTitle1,
-              icon: Icons.school_rounded,
-              color: AppColors.heartRateRed,
-            ),
+            _buildSupervisorCard(context, supervisor: SupervisorData.drGamal),
             SizedBox(height: context.responsive(mobile: 20, tablet: 30)),
             _buildSupervisorCard(
               context,
-              name: AppStrings.supervisorName2,
-              title: AppStrings.supervisorTitle2,
-              icon: Icons.psychology_rounded,
-              color: AppColors.ecgGreen,
+              supervisor: SupervisorData.assLecAsmaa,
             ),
             SizedBox(height: context.responsive(mobile: 40, tablet: 60)),
             _buildDescription(context),
@@ -57,10 +51,7 @@ class SupervisorScreen extends StatelessWidget {
       builder: (context, value, child) {
         return Transform.scale(
           scale: value,
-          child: Opacity(
-            opacity: value.clamp(0.0, 1.0),
-            child: child,
-          ),
+          child: Opacity(opacity: value.clamp(0.0, 1.0), child: child),
         );
       },
       child: Container(
@@ -80,61 +71,71 @@ class SupervisorScreen extends StatelessWidget {
 
   Widget _buildSupervisorCard(
     BuildContext context, {
-    required String name,
-    required String title,
-    required IconData icon,
-    required Color color,
+    required SupervisorModel supervisor,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-        border: Border.all(
-          color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
+    return InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SupervisorAbout(supervisorModel: supervisor),
         ),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(34),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
-            child: Icon(icon, color: color, size: 28),
+          ],
+          border: Border.all(
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
           ),
-          SizedBox(width: context.responsive(mobile: 20, tablet: 30)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: AppTheme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: context.responsive(mobile: 18, tablet: 22),
-                  ),
-                ),
-                SizedBox(height: context.responsive(mobile: 4, tablet: 6)),
-                Text(
-                  title,
-                  style: AppTheme.textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).hintColor,
-                  ),
-                ),
-              ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Image.asset(
+                supervisor.image,
+                width: 56,
+                height: 56,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+            SizedBox(width: context.responsive(mobile: 20, tablet: 30)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    supervisor.name,
+                    style: AppTheme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: context.responsive(mobile: 18, tablet: 22),
+                    ),
+                  ),
+                  SizedBox(height: context.responsive(mobile: 4, tablet: 6)),
+                  Text(
+                    supervisor.role,
+                    style: AppTheme.textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -151,7 +152,9 @@ class SupervisorScreen extends StatelessWidget {
         textAlign: TextAlign.center,
         style: AppTheme.textTheme.bodyMedium?.copyWith(
           height: 1.6,
-          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+          color: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
         ),
       ),
     );
