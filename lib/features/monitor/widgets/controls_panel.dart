@@ -42,6 +42,7 @@ class ControlsPanel extends StatelessWidget {
               name: result['name'] as String,
               gender: result['gender'] as String,
               age: result['age'] as int,
+              email: result['email'] as String,
             );
           }
         },

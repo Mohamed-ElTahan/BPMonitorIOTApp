@@ -56,12 +56,12 @@ class _ChartsPanelState extends State<ChartsPanel> {
         }
 
         final bool isPressureChart = currentIndex == 0;
-        final String title =
-            isPressureChart
-                ? AppStrings.liveBloodPressure
-                : AppStrings.ecgWaveform;
-        final Color themeColor =
-            isPressureChart ? AppColors.bpAmber : AppColors.ecgGreen;
+        final String title = isPressureChart
+            ? AppStrings.liveBloodPressure
+            : AppStrings.ecgWaveform;
+        final Color themeColor = isPressureChart
+            ? AppColors.bpAmber
+            : AppColors.ecgGreen;
 
         return Column(
           children: [
@@ -108,13 +108,12 @@ class _ChartsPanelState extends State<ChartsPanel> {
                 onPageChanged: (index) {
                   context.read<MonitorCubit>().changeChart(index);
                 },
-                children: const [
-                  BpChartCardWidget(),
-                  EcgChartCardWidget(),
-                ],
+                children: const [BpChartCardWidget(), EcgChartCardWidget()],
               ),
             ),
-            const SizedBox(height: 8),
+            (MediaQuery.of(context).size.width > 600)
+                ? SizedBox(height: 8)
+                : SizedBox(height: 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(2, (index) {
@@ -124,12 +123,9 @@ class _ChartsPanelState extends State<ChartsPanel> {
                   height: 8,
                   width: currentIndex == index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color:
-                        currentIndex == index
-                            ? (index == 0
-                                ? AppColors.bpAmber
-                                : AppColors.ecgGreen)
-                            : AppColors.lightCardBorder,
+                    color: currentIndex == index
+                        ? (index == 0 ? AppColors.bpAmber : AppColors.ecgGreen)
+                        : AppColors.lightCardBorder,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );
