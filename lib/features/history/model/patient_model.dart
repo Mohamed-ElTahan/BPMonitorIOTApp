@@ -9,6 +9,7 @@ class PatientModel extends PatientMeasurementModel {
   final String name;
   final String gender;
   final int age;
+  final String email;
   final DateTime timestamp;
 
   const PatientModel({
@@ -16,6 +17,7 @@ class PatientModel extends PatientMeasurementModel {
     required this.name,
     required this.gender,
     required this.age,
+    required this.email,
 
     required super.oximeter,
     required super.bloodPressure,
@@ -78,6 +80,7 @@ class PatientModel extends PatientMeasurementModel {
       name: json[FirebaseConstants.keyName] ?? "Unknown",
       gender: json[FirebaseConstants.keyGender] ?? "Unknown",
       age: json[FirebaseConstants.keyAge] ?? 0,
+      email: json[FirebaseConstants.keyEmail] ?? "",
       timestamp: json[FirebaseConstants.keyTimestamp] is Timestamp
           ? (json[FirebaseConstants.keyTimestamp] as Timestamp).toDate()
           : DateTime.tryParse(
@@ -101,6 +104,7 @@ class PatientModel extends PatientMeasurementModel {
       FirebaseConstants.keyName: name,
       FirebaseConstants.keyGender: gender,
       FirebaseConstants.keyAge: age,
+      FirebaseConstants.keyEmail: email,
       FirebaseConstants.keyBloodPressure: bloodPressure.toJson(),
       FirebaseConstants.keyEstimatedBloodPressure: estimatedBloodPressure.toJson(),
       FirebaseConstants.keyOximeter: oximeter.toJson(),

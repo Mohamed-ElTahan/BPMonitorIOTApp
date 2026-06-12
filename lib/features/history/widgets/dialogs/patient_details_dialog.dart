@@ -66,6 +66,16 @@ class PatientDetailsDialog extends StatelessWidget {
                         '${patient.gender} • ${patient.age} ${AppStrings.years}',
                         style: AppTheme.textTheme.bodySmall,
                       ),
+                      if (patient.email.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          patient.email,
+                          style: AppTheme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
