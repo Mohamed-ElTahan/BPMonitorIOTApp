@@ -95,4 +95,6 @@ class AppStrings {
   static const String genderLabel = 'Gender';
   static const String genderMale = 'Male';
   static const String genderFemale = 'Female';
+  static const String enterEmail = 'Please enter an email';
+  static const String invalidEmail = 'Please enter a valid email';
 }
