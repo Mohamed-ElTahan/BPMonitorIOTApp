@@ -18,10 +18,7 @@ class AnalysisHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            AppColors.ecgGreen.withValues(alpha: 0.05),
-          ],
+          colors: [Colors.white, AppColors.ecgGreen.withValues(alpha: 0.05)],
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
@@ -51,7 +48,9 @@ class AnalysisHeader extends StatelessWidget {
               radius: 32,
               backgroundColor: AppColors.ecgGreen,
               child: Icon(
-                patient.gender == AppStrings.genderMale ? Icons.male : Icons.female,
+                patient.gender == AppStrings.genderMale
+                    ? Icons.male
+                    : Icons.female,
                 color: Colors.white,
                 size: 36,
               ),
@@ -70,11 +69,26 @@ class AnalysisHeader extends StatelessWidget {
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 4),
+                if (patient.email.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    patient.email,
+                    style: AppTheme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.lightTextSecondary.withValues(
+                        alpha: 0.8,
+                      ),
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 6),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.lightScaffoldBackground,
                         borderRadius: BorderRadius.circular(12),

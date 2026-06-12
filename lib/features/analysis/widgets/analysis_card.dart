@@ -58,7 +58,7 @@ class AnalysisCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -70,7 +70,7 @@ class AnalysisCard extends StatelessWidget {
                         child: Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: interpretation.color.withValues(
                                   alpha: 0.1,
@@ -123,7 +123,7 @@ class AnalysisCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
@@ -146,10 +146,10 @@ class AnalysisCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: AppColors.lightScaffoldBackground.withValues(
                         alpha: 0.5,
@@ -170,7 +170,7 @@ class AnalysisCard extends StatelessWidget {
                             interpretation.description,
                             style: AppTheme.textTheme.bodyMedium?.copyWith(
                               color: AppColors.lightTextSecondary,
-                              height: 1.4,
+                              height: 1.2,
                             ),
                           ),
                         ),
