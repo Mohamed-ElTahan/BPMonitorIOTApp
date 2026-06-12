@@ -10,10 +10,9 @@ class SupervisorData {
   );
 
   static final SupervisorModel assLecAsmaa = SupervisorModel(
-    name: 'Ass. Lecture Asmaa Radi',
-    role: 'Ass. Lec. of Electronics and Communications Engineering',
-    image: 'assets/team_image/profile.png',
-    bio:
-        'Assistant Lecturer Asmaa Radi holds a Master of Science degree in Electrical Engineering from Military Technical College, Egypt. She has worked as a Teaching Assistant at the Faculty of Engineering, Cairo University, and currently serves as an Assistant Lecturer at the Military Technical College, specializing in biomedical instrumentation and digital signal processing. She has contributed to several research projects focused on the development of advanced medical devices and machine learning applications in healthcare.',
+    name: 'Asst. Lec. Asmaa Radi',
+    role: 'Assistant Lecturer of Electronics and Communications Engineering',
+    image: "",
+    bio: "",
   );
 }

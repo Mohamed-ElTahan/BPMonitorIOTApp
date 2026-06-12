@@ -204,6 +204,7 @@ class MonitorCubit extends Cubit<MonitorState> {
     required String name,
     required String gender,
     required int age,
+    required String email,
   }) async {
     if (state is! MonitorConnected) return;
     final current = state as MonitorConnected;
@@ -219,6 +220,7 @@ class MonitorCubit extends Cubit<MonitorState> {
           name: name,
           gender: gender,
           age: age,
+          email: email,
           timestamp: DateTime.now(),
           bloodPressure: vitals.bloodPressure,
           estimatedBloodPressure: vitals.estimatedBloodPressure,

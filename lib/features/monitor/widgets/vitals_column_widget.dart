@@ -26,53 +26,50 @@ class VitalsColumnWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          child: VitalsCardCol(
-            title: AppStrings.livePressure,
-            value: livePressure.isNotEmpty
-                ? livePressure.last.toStringAsFixed(1)
-                : "0",
-            unit: AppStrings.unitMmHg,
-            iconColor: AppColors.spo2Cyan,
-            icon: Icons.compress,
-          ),
+        // VitalsCardCol(
+        //   title: AppStrings.livePressure,
+        //   value: livePressure.isNotEmpty
+        //       ? livePressure.last.toStringAsFixed(1)
+        //       : "0",
+        //   unit: AppStrings.unitMmHg,
+        //   iconColor: AppColors.spo2Cyan,
+        //   icon: Icons.compress,
+        // ),
+        VitalsCardCol(
+          title: AppStrings.bloodPressure,
+          value: (sys == 0 && dia == 0)
+              ? livePressure.isEmpty
+                    ? "0/0"
+                    : livePressure.last.toStringAsFixed(0)
+              : "${sys.toStringAsFixed(0)}/${dia.toStringAsFixed(0)}",
+          unit: AppStrings.unitMmHg,
+          iconColor: AppColors.bpAmber,
+          icon: Icons.speed,
         ),
-        SizedBox(
-          child: VitalsCardCol(
-            title: AppStrings.bloodPressure,
-            value: "${sys.toStringAsFixed(0)}/${dia.toStringAsFixed(0)}",
-            unit: AppStrings.unitMmHg,
-            iconColor: AppColors.bpAmber,
-            icon: Icons.speed,
-          ),
+
+        VitalsCardCol(
+          title: AppStrings.estimatedBp,
+          value:
+              "${estimatedBp.systolic.toStringAsFixed(0)}/${estimatedBp.diastolic.toStringAsFixed(0)}",
+          unit: AppStrings.unitMmHg,
+          iconColor: Colors.deepPurpleAccent,
+          icon: Icons.analytics,
         ),
-        SizedBox(
-          child: VitalsCardCol(
-            title: AppStrings.heartRate,
-            value: hr.toString(),
-            unit: AppStrings.unitBpm,
-            iconColor: AppColors.heartRateRed,
-            icon: Icons.heart_broken_outlined,
-          ),
+
+        VitalsCardCol(
+          title: AppStrings.heartRate,
+          value: hr.toString(),
+          unit: AppStrings.unitBpm,
+          iconColor: AppColors.heartRateRed,
+          icon: Icons.heart_broken_outlined,
         ),
-        SizedBox(
-          child: VitalsCardCol(
-            title: AppStrings.oxygen,
-            value: "${spo2.toString()}%",
-            unit: AppStrings.spo2,
-            iconColor: AppColors.spo2Cyan,
-            icon: Icons.water_drop,
-          ),
-        ),
-        SizedBox(
-          child: VitalsCardCol(
-            title: AppStrings.estimatedBp,
-            value:
-                "${estimatedBp.systolic.toStringAsFixed(0)}/${estimatedBp.diastolic.toStringAsFixed(0)}",
-            unit: AppStrings.unitMmHg,
-            iconColor: Colors.deepPurpleAccent,
-            icon: Icons.analytics,
-          ),
+
+        VitalsCardCol(
+          title: AppStrings.oxygen,
+          value: "${spo2.toString()}%",
+          unit: AppStrings.spo2,
+          iconColor: AppColors.spo2Cyan,
+          icon: Icons.water_drop,
         ),
       ],
     );
@@ -99,7 +96,7 @@ class VitalsCardCol extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

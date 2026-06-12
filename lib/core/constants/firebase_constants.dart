@@ -7,6 +7,7 @@ class FirebaseConstants {
   static const String keyName = 'name';
   static const String keyGender = 'gender';
   static const String keyAge = 'age';
+  static const String keyEmail = 'email';
   static const String keyBloodPressure = 'bloodPressure';
   static const String keyOximeter = 'oximeter';
   static const String keyLivePressure = 'livePressure';

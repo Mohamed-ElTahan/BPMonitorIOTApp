@@ -85,7 +85,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.lightCardBorder),
           borderRadius: BorderRadius.circular(12),
         ),
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: const EdgeInsets.only(bottom: 8),
       ),
 
       // elevated button theme
@@ -103,7 +103,7 @@ class AppTheme {
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         selectedItemColor: AppColors.ecgGreen,
-        unselectedItemColor: AppColors.lightTextSecondary,
+        unselectedItemColor: AppColors.darkCardBackground,
         selectedLabelStyle: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 12,
