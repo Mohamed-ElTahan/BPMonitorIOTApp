@@ -74,12 +74,15 @@ class SupervisorScreen extends StatelessWidget {
     required SupervisorModel supervisor,
   }) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SupervisorAbout(supervisorModel: supervisor),
-        ),
-      ),
+      onTap: supervisor.bio != ""
+          ? () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SupervisorAbout(supervisorModel: supervisor),
+              ),
+            )
+          : null,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
@@ -105,12 +108,14 @@ class SupervisorScreen extends StatelessWidget {
                 color: Colors.blue.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(
-                supervisor.image,
-                width: 56,
-                height: 56,
-                fit: BoxFit.cover,
-              ),
+              child: supervisor.image != ""
+                  ? Image.asset(
+                      supervisor.image,
+                      width: 56,
+                      height: 56,
+                      fit: BoxFit.cover,
+                    )
+                  : const Icon(Icons.person, size: 56, color: Colors.blue),
             ),
             SizedBox(width: context.responsive(mobile: 20, tablet: 30)),
             Expanded(

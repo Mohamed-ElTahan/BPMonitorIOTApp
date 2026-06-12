@@ -32,11 +32,11 @@ class ListTeamMember {
     ),
     MemberModel(
       name: 'Basmala Mohamed Abdo',
-      imagePath: 'assets/team_image/profile.png',
+      imagePath: 'assets/team_image/basmala.PNG',
     ),
     MemberModel(
       name: 'Abrar Khaled',
-      imagePath: 'assets/team_image/profile.png',
+      imagePath: 'assets/team_image/abrar.PNG',
     ),
   ];
 }
