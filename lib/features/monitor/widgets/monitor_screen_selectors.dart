@@ -21,11 +21,11 @@ class VitalsSnapshot {
   });
 
   const VitalsSnapshot.empty()
-      : hr = 0,
-        spo2 = 0,
-        sys = 0,
-        dia = 0,
-        livePressure = const [];
+    : hr = 0,
+      spo2 = 0,
+      sys = 0,
+      dia = 0,
+      livePressure = const [];
 
   @override
   bool operator ==(Object other) =>
@@ -58,12 +58,12 @@ class EcgSnapshot {
 
 class ControlsSnapshot {
   final bool isConnected;
-  final bool isMeasuring;
+  final bool isBPMeasuring;
   final bool isSaving;
 
   const ControlsSnapshot({
     required this.isConnected,
-    required this.isMeasuring,
+    required this.isBPMeasuring,
     required this.isSaving,
   });
 
@@ -71,9 +71,9 @@ class ControlsSnapshot {
   bool operator ==(Object other) =>
       other is ControlsSnapshot &&
       isConnected == other.isConnected &&
-      isMeasuring == other.isMeasuring &&
+      isBPMeasuring == other.isBPMeasuring &&
       isSaving == other.isSaving;
 
   @override
-  int get hashCode => Object.hash(isConnected, isMeasuring, isSaving);
+  int get hashCode => Object.hash(isConnected, isBPMeasuring, isSaving);
 }

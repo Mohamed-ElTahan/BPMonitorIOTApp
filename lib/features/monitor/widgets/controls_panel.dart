@@ -16,22 +16,22 @@ class ControlsPanel extends StatelessWidget {
         if (state is MonitorConnected) {
           return ControlsSnapshot(
             isConnected: true,
-            isMeasuring: state.isMeasuring,
+            isBPMeasuring: state.isBPMeasuring,
             isSaving: state is MonitorSaving,
           );
         }
         return const ControlsSnapshot(
           isConnected: false,
-          isMeasuring: false,
+          isBPMeasuring: false,
           isSaving: false,
         );
       },
       builder: (context, snapshot) => MonitorControlsWidget(
         isConnected: snapshot.isConnected,
-        isMeasuring: snapshot.isMeasuring,
+        isBPMeasuring: snapshot.isBPMeasuring,
         isSaving: snapshot.isSaving,
-        onStart: () => context.read<MonitorCubit>().startMeasurement(),
-        onStop: () => context.read<MonitorCubit>().stopMeasurement(),
+        onStart: () => context.read<MonitorCubit>().startBpMeasurement(),
+        onStop: () => context.read<MonitorCubit>().stopBpMeasurement(),
         onSave: () async {
           final result = await showDialog<Map<String, dynamic>>(
             context: context,

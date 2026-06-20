@@ -4,7 +4,7 @@ import '../../../core/theme/app_colors.dart';
 
 class MonitorControlsWidget extends StatelessWidget {
   final bool isConnected;
-  final bool isMeasuring;
+  final bool isBPMeasuring;
   final bool isSaving;
   final VoidCallback? onStart;
   final VoidCallback? onStop;
@@ -13,7 +13,7 @@ class MonitorControlsWidget extends StatelessWidget {
   const MonitorControlsWidget({
     super.key,
     required this.isConnected,
-    this.isMeasuring = false,
+    this.isBPMeasuring = false,
     this.isSaving = false,
     this.onStart,
     this.onStop,
@@ -32,12 +32,12 @@ class MonitorControlsWidget extends StatelessWidget {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: controlsEnabled
-                ? (isMeasuring ? onStop : onStart)
+                ? (isBPMeasuring ? onStop : onStart)
                 : null,
-            icon: Icon(isMeasuring ? Icons.stop : Icons.play_arrow),
-            label: Text(isMeasuring ? AppStrings.stop : AppStrings.start),
+            icon: Icon(isBPMeasuring ? Icons.stop : Icons.play_arrow),
+            label: Text(isBPMeasuring ? AppStrings.stop : AppStrings.start),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isMeasuring
+              backgroundColor: isBPMeasuring
                   ? AppColors.heartRateRed
                   : AppColors.ecgGreen,
               foregroundColor: Colors.white,

@@ -37,13 +37,17 @@ class _ChartsPanelState extends State<ChartsPanel> {
     return BlocBuilder<MonitorCubit, MonitorState>(
       buildWhen: (prev, curr) {
         if (prev is MonitorConnected && curr is MonitorConnected) {
-          return prev.currentChartIndex != curr.currentChartIndex;
+          return prev.currentChartIndex != curr.currentChartIndex ||
+              prev.isECGMeasuring != curr.isECGMeasuring ||
+              prev.isBPMeasuring != curr.isBPMeasuring;
         }
         return prev.runtimeType != curr.runtimeType;
       },
       builder: (context, state) {
         final isConnected = state is MonitorConnected;
         final currentIndex = isConnected ? state.currentChartIndex : 0;
+        final isEcgMeasuring = isConnected ? state.isECGMeasuring : false;
+        final isBpMeasuring = isConnected ? state.isBPMeasuring : false;
 
         // Ensure PageController is in sync with state index
         if (_pageController.hasClients &&
@@ -91,13 +95,40 @@ class _ChartsPanelState extends State<ChartsPanel> {
                     ),
                   ),
                   const Spacer(),
-                  Icon(
-                    isPressureChart
-                        ? Icons.bloodtype_outlined
-                        : Icons.monitor_heart_outlined,
-                    color: themeColor.withValues(alpha: 0.7),
-                    size: 20,
-                  ),
+                  if (!isPressureChart)
+                    IconButton(
+                      icon: Icon(
+                        isEcgMeasuring
+                            ? Icons.stop_circle_outlined
+                            : Icons.play_circle_fill_outlined,
+                        color: themeColor,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        if (isEcgMeasuring) {
+                          context.read<MonitorCubit>().stopEcgMeasurement();
+                        } else {
+                          context.read<MonitorCubit>().startEcgMeasurement();
+                        }
+                      },
+                    )
+                  else
+                    IconButton(
+                      icon: Icon(
+                        isBpMeasuring
+                            ? Icons.stop_circle_outlined
+                            : Icons.play_circle_fill_outlined,
+                        color: themeColor,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        if (isBpMeasuring) {
+                          context.read<MonitorCubit>().stopBpMeasurement();
+                        } else {
+                          context.read<MonitorCubit>().startBpMeasurement();
+                        }
+                      },
+                    ),
                 ],
               ),
             ),
