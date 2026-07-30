@@ -80,7 +80,9 @@ class MonitorCubit extends Cubit<MonitorState> {
 
     _oximeterSub = repository.getOximeterStream().listen((oxi) {
       if (kDebugMode) {
-        debugPrint('⌚ Oximeter Received: HR ${oxi.heartRate}, SpO2 ${oxi.spo2}');
+        debugPrint(
+          '⌚ Oximeter Received: HR ${oxi.heartRate}, SpO2 ${oxi.spo2}',
+        );
       }
       _updateVitals(oximeter: oxi);
     });
@@ -135,10 +137,7 @@ class MonitorCubit extends Cubit<MonitorState> {
       final clampedPoints = bpLiveChunk.map((v) => v < 0 ? 0.0 : v);
       _rollingBpPoints.addAll(clampedPoints);
       if (_rollingBpPoints.length > _maxBpPoints) {
-        _rollingBpPoints.removeRange(
-          0,
-          _rollingBpPoints.length - _maxBpPoints,
-        );
+        _rollingBpPoints.removeRange(0, _rollingBpPoints.length - _maxBpPoints);
       }
     }
 
@@ -152,14 +151,12 @@ class MonitorCubit extends Cubit<MonitorState> {
           // REFERENCE STABILITY:
           // Only emit a NEW list if we actually added data to it.
           // This prevents charts from rebuilding when unrelated data (e.g. HR) arrives.
-          ecg:
-              hasNewEcg
-                  ? List<double>.from(_rollingEcgPoints)
-                  : updatedVitals.ecg,
-          livePressure:
-              hasNewBp
-                  ? List<double>.from(_rollingBpPoints)
-                  : updatedVitals.livePressure,
+          ecg: hasNewEcg
+              ? List<double>.from(_rollingEcgPoints)
+              : updatedVitals.ecg,
+          livePressure: hasNewBp
+              ? List<double>.from(_rollingBpPoints)
+              : updatedVitals.livePressure,
           estimatedBloodPressure: BpEstimator.estimate(
             (oximeter ?? updatedVitals.oximeter).heartRate,
             (oximeter ?? updatedVitals.oximeter).spo2,
@@ -173,18 +170,32 @@ class MonitorCubit extends Cubit<MonitorState> {
   // Public commands
   // ---------------------------------------------------------------------------
 
-  void startMeasurement() {
+  void startBpMeasurement() {
     if (state is! MonitorConnected) return;
     final current = state as MonitorConnected;
-    repository.sendCommand('start');
-    emit(current.copyWithState(isMeasuring: true));
+    repository.sendCommand('startBP');
+    emit(current.copyWithState(isBPMeasuring: true));
   }
 
-  void stopMeasurement() {
+  void stopBpMeasurement() {
     if (state is! MonitorConnected) return;
     final current = state as MonitorConnected;
-    repository.sendCommand('stop');
-    emit(current.copyWithState(isMeasuring: false));
+    repository.sendCommand('stopBP');
+    emit(current.copyWithState(isBPMeasuring: false));
+  }
+
+  void startEcgMeasurement() {
+    if (state is! MonitorConnected) return;
+    final current = state as MonitorConnected;
+    repository.sendCommand('startECG');
+    emit(current.copyWithState(isECGMeasuring: true));
+  }
+
+  void stopEcgMeasurement() {
+    if (state is! MonitorConnected) return;
+    final current = state as MonitorConnected;
+    repository.sendCommand('stopECG');
+    emit(current.copyWithState(isECGMeasuring: false));
   }
 
   void changeChart(int index) {
